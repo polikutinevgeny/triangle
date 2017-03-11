@@ -1,9 +1,13 @@
 #version 450
 
 layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 color;
 
-uniform vec3 positionShift;
+uniform mat4 transform;
+
+out vec4 ourColor;
 
 void main() {
-    gl_Position = vec4(position + positionShift, 1.0);
+    gl_Position = transform * vec4(position, 1.0);
+    ourColor = vec4(color, 1.0);
 }
