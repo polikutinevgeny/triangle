@@ -11,7 +11,7 @@ Shader::Shader(std::string source, GLenum type) {
     glGetShaderiv(shader_loc, GL_COMPILE_STATUS, &success);
     if(!success) {
         glGetShaderInfoLog(shader_loc, 512, NULL, info_log);
-        throw std::runtime_error("Error: shader compilation failed\n" + static_cast<char>(info_log));
+        throw std::runtime_error(std::string("Error: shader compilation failed\n") + std::string(info_log));
     }
 }
 
@@ -29,7 +29,7 @@ ShaderProgram::ShaderProgram(Shader vertex_shader, Shader fragment_shader) {
     glGetProgramiv(shader_program_loc, GL_LINK_STATUS, &success);
     if(!success) {
         glGetProgramInfoLog(shader_program_loc, 512, NULL, info_log);
-        throw std::runtime_error("Error: shader program linking failed\n" + static_cast<char>(info_log));
+        throw std::runtime_error(std::string("Error: shader program linking failed\n") + std::string(info_log));
     }
 }
 
