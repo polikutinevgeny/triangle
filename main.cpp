@@ -10,22 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
-std::string readFile(const char *filePath) {
-    std::string content;
-    std::ifstream fileStream(filePath, std::ios::in);
-    if(!fileStream.is_open()) {
-        std::cerr << "Could not read file " << filePath << ". File does not exist." << std::endl;
-        return "";
-    }
-    std::string line = "";
-    while(!fileStream.eof()) {
-        std::getline(fileStream, line);
-        content.append(line + "\n");
-    }
-    fileStream.close();
-    return content;
-}
+#include "utility.hpp"
 
 
 int main() {
@@ -61,7 +46,7 @@ int main() {
     // Vertex shader
     GLuint vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    std::string vertexShaderSource = readFile("vertex.vert");
+    std::string vertexShaderSource = ReadFile("vertex.vert");
     const char* vertexShaderSourceString = vertexShaderSource.c_str();
     glShaderSource(vertexShader, 1, &vertexShaderSourceString, NULL);
     glCompileShader(vertexShader);
@@ -75,7 +60,7 @@ int main() {
     // Fragment shader
     GLuint fragmentShader;
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    std::string fragmentShaderSource = readFile("fragment.frag");
+    std::string fragmentShaderSource = ReadFile("fragment.frag");
     const char* fragmentShaderSourceString = fragmentShaderSource.c_str();
     glShaderSource(fragmentShader, 1, &fragmentShaderSourceString, NULL);
     glCompileShader(fragmentShader);
