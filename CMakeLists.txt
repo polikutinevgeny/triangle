@@ -10,7 +10,7 @@ configure_file(vertex.vert vertex.vert COPYONLY)
 
 # Define sources and executable
 set(EXECUTABLE_NAME "triangle")
-add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp)
+add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp model.hpp triangle.hpp triangle.cpp)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
