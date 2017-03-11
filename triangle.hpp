@@ -9,11 +9,12 @@
 
 class Triangle: public Model {
 public:
-    Triangle(GLfloat vertices[9]);
+    Triangle(GLfloat vertices[18]);
     void Draw() override;
+    void Update(float time) override;
 
 private:
-    GLfloat vertices[9];
+    GLfloat vertices[18];
     VBO vbo;
     VAO vao;
 };

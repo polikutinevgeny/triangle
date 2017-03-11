@@ -6,6 +6,7 @@ class Model {
 public:
     virtual ~Model() {};
     virtual void Draw() = 0;
+    virtual void Update(float time) = 0;
 };
 
 
