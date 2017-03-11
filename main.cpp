@@ -1,8 +1,4 @@
 #include <string>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <algorithm>
 #include <cmath>
 #include <GL/glew.h>
 #include <SFML/Window.hpp>
@@ -13,6 +9,7 @@
 #include "utility.hpp"
 #include "shader.hpp"
 #include "vbo.hpp"
+#include "vao.hpp"
 
 
 int main() {
@@ -31,15 +28,13 @@ int main() {
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // VAO
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    VAO vao;
+    vao.Bind();
     VBO vbo;
     vbo.SetData(sizeof(vertices), vertices, GL_STATIC_DRAW);
     vbo.SetAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
     vbo.SetAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glBindVertexArray(0);
+    vao.Unbind();
     Shader vertex_shader(ReadFile("vertex.vert"), GL_VERTEX_SHADER);
     Shader fragment_shader(ReadFile("fragment.frag"), GL_FRAGMENT_SHADER);
     ShaderProgram shader_program(vertex_shader, fragment_shader);
@@ -66,9 +61,9 @@ int main() {
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         GLint timeLoc = shader_program.GetUniformLocation("time");
         glUniform1f(timeLoc, timeValue);
-        glBindVertexArray(VAO);
+        vao.Bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0);
+        vao.Unbind();
         shader_program.Unuse();
         window.display();
     }
