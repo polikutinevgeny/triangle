@@ -23,6 +23,7 @@ public:
     ~ShaderProgram();
     void Use();
     void Unuse();
+    GLint GetUniformLocation(std::string name);
 
 private:
     GLuint shader_program_loc;
