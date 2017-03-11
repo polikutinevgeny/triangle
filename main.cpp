@@ -7,17 +7,17 @@ int main() {
     sf::Window window(sf::VideoMode(640, 480), "Triangle", sf::Style::Default, contextSettings);
     Engine engine(window);
     GLfloat vertices1[] = {
-            -1.0f, -1.0f, -0.5f, 1.0f, 0.0f, 0.0f,
-             0.0f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-             1.0f, -1.0f, -0.5f, 0.0f, 0.0f, 1.0f
+            -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+             0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+             1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f
     };
     GLfloat vertices2[] = {
-            -1.0f, -1.0f, -1.5f, 0.0f, 0.0f, 1.0f,
-             0.0f,  0.5f, -1.5f, 0.0f, 1.0f, 0.0f,
-             1.0f, -1.0f, -1.5f, 1.0f, 0.0f, 0.0f
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+             0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f
     };
-    Triangle* triangle1 = new Triangle(vertices1);
-    Triangle* triangle2 = new Triangle(vertices2);
+    Triangle* triangle1 = new Triangle(vertices1, 0, 0, -0.5f);
+    Triangle* triangle2 = new Triangle(vertices2, 0, 0, -1.5f);
     engine.LoadModel(triangle1);
     engine.LoadModel(triangle2);
     engine.MainLoop();

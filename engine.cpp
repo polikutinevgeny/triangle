@@ -22,13 +22,12 @@ Engine::~Engine() {
 }
 
 void Engine::MainLoop() {
-    glViewport(0, 0, window.getSize().x, window.getSize().y);
-    glEnable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     Shader vertex_shader(ReadFile("vertex.vert"), GL_VERTEX_SHADER);
     Shader fragment_shader(ReadFile("fragment.frag"), GL_FRAGMENT_SHADER);
     ShaderProgram shader_program(vertex_shader, fragment_shader);
+    for (auto it: models) {
+        it->Load(shader_program);
+    }
     sf::Clock clock;
     while (window.isOpen()) {
         sf::Event event;
@@ -44,14 +43,9 @@ void Engine::MainLoop() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader_program.Use();
         GLfloat timeValue = clock.getElapsedTime().asSeconds();
-        glm::mat4 trans = glm::perspective(
-                glm::radians(60.0f), (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 10.0f);
-        trans = glm::translate(trans, glm::vec3(cosf(timeValue), sinf(timeValue), -3.0 + sinf(timeValue)));
-        trans = glm::rotate(trans, timeValue, glm::vec3(0.0, 0.0, 1.0));
-        GLint transformLoc = shader_program.GetUniformLocation("transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         for (auto it: models) {
-            it->Draw();
+            it->Update(timeValue);
+            it->Draw(shader_program);
         }
         shader_program.Unuse();
         window.display();
@@ -61,4 +55,8 @@ void Engine::MainLoop() {
 Engine::Engine(sf::Window& window): window(window) {
     window.setActive();
     glewInit();
+    glViewport(0, 0, window.getSize().x, window.getSize().y);
+    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

@@ -23,7 +23,8 @@ public:
     ~ShaderProgram();
     void Use();
     void Unuse();
-    GLint GetUniformLocation(std::string name);
+    GLuint GetUniformLocation(std::string name);
+    GLuint GetAttribLocation(std::string name);
 
 private:
     GLuint shader_program_loc;
