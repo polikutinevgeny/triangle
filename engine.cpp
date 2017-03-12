@@ -1,14 +1,8 @@
-#include "engine.hpp"
-#include <string>
-#include <cmath>
-#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include "engine.hpp"
 #include "utility.hpp"
-#include "shader.hpp"
-#include "triangle.hpp"
 
 
 void Engine::LoadModel(Model* model) {
@@ -43,6 +37,12 @@ void Engine::MainLoop() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader_program.Use();
         GLfloat timeValue = clock.getElapsedTime().asSeconds();
+        glm::mat4 view;
+        glm::mat4 transform;
+        GLint view_loc = shader_program.GetUniformLocation("view");
+        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+        GLint transform_loc = shader_program.GetUniformLocation("transform");
+        glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform));
         for (auto it: models) {
             it->Update(timeValue);
             it->Draw(shader_program);

@@ -19,7 +19,7 @@ private:
     GLfloat vertices[18];
     VBO vbo;
     VAO vao;
-    GLfloat x, y, z;
+    GLfloat x0, y0, z0, x, y, z;
 };
 
 

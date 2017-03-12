@@ -4,10 +4,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 
 Triangle::Triangle(GLfloat vertices[18], GLfloat x, GLfloat y, GLfloat z)
-        : x(x), y(y), z(z) {
+        : x(x), y(y), z(z), x0(x), y0(y), z0(z) {
     std::copy(vertices, vertices + 18, this->vertices);
 }
 
@@ -22,8 +23,8 @@ void Triangle::Draw(ShaderProgram& shader_program) {
 }
 
 void Triangle::Update(float time) {
-    x += cosf(time) / 100000;
-    y += sinf(time) / 100000;
+    x = x0 + cosf(time);
+    y = y0 + sinf(time);
 }
 
 void Triangle::Load(ShaderProgram &shader_program) {
