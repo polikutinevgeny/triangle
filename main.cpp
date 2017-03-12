@@ -16,8 +16,8 @@ int main() {
              0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
              1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f
     };
-    Triangle* triangle1 = new Triangle(vertices1, 0, 0, -0.5f);
-    Triangle* triangle2 = new Triangle(vertices2, 0, 0, -1.5f);
+    Triangle* triangle1 = new Triangle(vertices1, 0.0f, 0.0f, -0.5f);
+    Triangle* triangle2 = new Triangle(vertices2, -0.0f, -0.0f, -1.5f);
     engine.LoadModel(triangle1);
     engine.LoadModel(triangle2);
     engine.MainLoop();
