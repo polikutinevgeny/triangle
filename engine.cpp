@@ -3,6 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "engine.hpp"
 #include "utility.hpp"
+#include "camera.hpp"
 
 
 void Engine::LoadModel(Model* model) {
@@ -22,6 +23,7 @@ void Engine::MainLoop() {
     for (auto it: models) {
         it->Load(shader_program);
     }
+    Camera camera(glm::vec3(0, 0, 3.f), glm::vec3(0, 0, 0));
     sf::Clock clock;
     while (window.isOpen()) {
         sf::Event event;
@@ -37,12 +39,13 @@ void Engine::MainLoop() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader_program.Use();
         GLfloat timeValue = clock.getElapsedTime().asSeconds();
-        glm::mat4 view;
-        glm::mat4 transform;
+        camera.MoveTo(glm::vec3(sinf(timeValue) * 5, 0, cosf(timeValue) * 5));
+        glm::mat4 projection =
+                glm::perspective(45.0f, (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
         GLint view_loc = shader_program.GetUniformLocation("view");
-        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
-        GLint transform_loc = shader_program.GetUniformLocation("transform");
-        glUniformMatrix4fv(transform_loc, 1, GL_FALSE, glm::value_ptr(transform));
+        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(camera.View()));
+        GLint projection_loc = shader_program.GetUniformLocation("projection");
+        glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
         for (auto it: models) {
             it->Update(timeValue);
             it->Draw(shader_program);

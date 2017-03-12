@@ -23,8 +23,8 @@ void Triangle::Draw(ShaderProgram& shader_program) {
 }
 
 void Triangle::Update(float time) {
-    x = x0 + cosf(time);
-    y = y0 + sinf(time);
+//    x = x0 + cosf(time);
+//    y = y0 + sinf(time);
 }
 
 void Triangle::Load(ShaderProgram &shader_program) {
