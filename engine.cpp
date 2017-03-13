@@ -39,7 +39,7 @@ void Engine::MainLoop() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader_program.Use();
         GLfloat timeValue = clock.getElapsedTime().asSeconds();
-        camera.MoveTo(glm::vec3(sinf(timeValue) * 5, 0, cosf(timeValue) * 5));
+        camera.MoveTo(glm::vec3(sin(timeValue) * 5, 0, cos(timeValue) * 5));
         glm::mat4 projection =
                 glm::perspective(45.0f, (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
         GLint view_loc = shader_program.GetUniformLocation("view");
