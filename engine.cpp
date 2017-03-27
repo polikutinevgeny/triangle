@@ -1,6 +1,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include "engine.hpp"
 #include "utility.hpp"
 #include "camera.hpp"
@@ -23,7 +24,11 @@ void Engine::MainLoop() {
     for (auto it: models) {
         it->Load(shader_program);
     }
-    Camera camera(glm::vec3(0, 0, 5.f), glm::vec3(0, 0, 0));
+    GLfloat deltaTime = 0.0f;
+    GLfloat lastFrame = 0.0f;
+    GLfloat lastX = window.getSize().x / 2, lastY = window.getSize().y / 2;
+    sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
+    Camera camera;
     sf::Clock clock;
     while (window.isOpen()) {
         sf::Event event;
@@ -35,16 +40,37 @@ void Engine::MainLoop() {
             if (event.type == sf::Event::Resized) {
                 glViewport(0, 0, event.size.width, event.size.height);
             }
+            if (event.type == sf::Event::MouseWheelMoved) {
+                camera.ProcessMouseScroll(event.mouseWheel.delta * 0.1f);
+            }
         }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            camera.ProcessKeyboard(FORWARD, deltaTime);
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            camera.ProcessKeyboard(BACKWARD, deltaTime);
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            camera.ProcessKeyboard(LEFT, deltaTime);
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            camera.ProcessKeyboard(RIGHT, deltaTime);
+        }
+        GLfloat xoffset = sf::Mouse::getPosition(window).x - lastX;
+        GLfloat yoffset = lastY - sf::Mouse::getPosition(window).y;
+        lastX = window.getSize().x / 2;
+        lastY = window.getSize().y / 2;
+        sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
+        camera.ProcessMouseMovement(xoffset, yoffset);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader_program.Enable();
         GLfloat timeValue = clock.getElapsedTime().asSeconds();
-        camera.MoveTo(glm::vec3(sin(timeValue) * 5, 0, cos(timeValue) * 5));
-//        camera.LookAt(glm::vec3(sin(timeValue) * 3, 0, 0));
+        deltaTime = timeValue - lastFrame;
+        lastFrame = timeValue;
         glm::mat4 projection =
-                glm::perspective(45.0f, (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
+                glm::perspective(glm::radians(camera.Zoom), (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
         GLint view_loc = shader_program.GetUniformLocation("view");
-        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(camera.View()));
+        glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
         GLint projection_loc = shader_program.GetUniformLocation("projection");
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
         for (auto it: models) {
@@ -58,6 +84,7 @@ void Engine::MainLoop() {
 
 Engine::Engine(sf::Window& window): window(window) {
     window.setActive();
+    window.setMouseCursorVisible(false);
     glewInit();
     glViewport(0, 0, window.getSize().x, window.getSize().y);
 //    glEnable(GL_BLEND);

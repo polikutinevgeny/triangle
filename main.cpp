@@ -4,7 +4,7 @@
 //TODO: check if shaders are vertex and fragment. Think about main loop. Engine must not depend on model.
 int main() {
     sf::ContextSettings contextSettings(24, 8, 0, 4, 5, sf::ContextSettings::Attribute::Core);
-    sf::Window window(sf::VideoMode(640, 480), "Triangle", sf::Style::Default, contextSettings);
+    sf::Window window(sf::VideoMode(1980, 1000), "Triangle", sf::Style::Default, contextSettings);
     Engine engine(window);
     GLfloat vertices1[] = {
             -1.0f, -4.0f, 0.0f, 1.0f, 0.0f, 0.0f,
