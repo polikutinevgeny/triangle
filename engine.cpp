@@ -6,7 +6,7 @@
 #include "camera.hpp"
 
 
-void Engine::LoadModel(Model* model) {
+void Engine::Assign(Model *model) {
     models.push_back(model);
 }
 
@@ -23,7 +23,7 @@ void Engine::MainLoop() {
     for (auto it: models) {
         it->Load(shader_program);
     }
-    Camera camera(glm::vec3(0, 0, 3.f), glm::vec3(0, 0, 0));
+    Camera camera(glm::vec3(0, 0, 5.f), glm::vec3(0, 0, 0));
     sf::Clock clock;
     while (window.isOpen()) {
         sf::Event event;
@@ -37,9 +37,10 @@ void Engine::MainLoop() {
             }
         }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        shader_program.Use();
+        shader_program.Enable();
         GLfloat timeValue = clock.getElapsedTime().asSeconds();
         camera.MoveTo(glm::vec3(sin(timeValue) * 5, 0, cos(timeValue) * 5));
+//        camera.LookAt(glm::vec3(sin(timeValue) * 3, 0, 0));
         glm::mat4 projection =
                 glm::perspective(45.0f, (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
         GLint view_loc = shader_program.GetUniformLocation("view");
@@ -50,7 +51,7 @@ void Engine::MainLoop() {
             it->Update(timeValue);
             it->Draw(shader_program);
         }
-        shader_program.Unuse();
+        shader_program.Disable();
         window.display();
     }
 }
@@ -59,7 +60,7 @@ Engine::Engine(sf::Window& window): window(window) {
     window.setActive();
     glewInit();
     glViewport(0, 0, window.getSize().x, window.getSize().y);
-    glEnable(GL_BLEND);
+//    glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

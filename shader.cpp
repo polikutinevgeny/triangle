@@ -19,7 +19,7 @@ Shader::~Shader() {
     glDeleteShader(shader_loc);
 }
 
-ShaderProgram::ShaderProgram(Shader vertex_shader, Shader fragment_shader) {
+ShaderProgram::ShaderProgram(Shader &vertex_shader, Shader &fragment_shader) {
     shader_program_loc = glCreateProgram();
     glAttachShader(shader_program_loc, vertex_shader.shader_loc);
     glAttachShader(shader_program_loc, fragment_shader.shader_loc);
@@ -37,11 +37,11 @@ ShaderProgram::~ShaderProgram() {
     glDeleteProgram(shader_program_loc);
 }
 
-void ShaderProgram::Use() {
+void ShaderProgram::Enable() {
     glUseProgram(shader_program_loc);
 }
 
-void ShaderProgram::Unuse() {
+void ShaderProgram::Disable() {
     glUseProgram(0);
 }
 

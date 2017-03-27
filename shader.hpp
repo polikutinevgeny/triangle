@@ -19,10 +19,10 @@ private:
 
 class ShaderProgram {
 public:
-    ShaderProgram(Shader vertex_shader, Shader fragment_shader);
+    ShaderProgram(Shader &vertex_shader, Shader &fragment_shader);
     ~ShaderProgram();
-    void Use();
-    void Unuse();
+    void Enable();
+    void Disable();
     GLuint GetUniformLocation(std::string name);
     GLuint GetAttribLocation(std::string name);
 

@@ -11,7 +11,7 @@
 class Engine {
 public:
     Engine(sf::Window& window);
-    void LoadModel(Model* model);
+    void Assign(Model *model);
     void MainLoop();
     ~Engine();
 
