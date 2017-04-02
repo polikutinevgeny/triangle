@@ -28,7 +28,7 @@ void Engine::MainLoop() {
     GLfloat lastFrame = 0.0f;
     GLfloat lastX = window.getSize().x / 2, lastY = window.getSize().y / 2;
     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
-    Camera camera;
+    Camera camera(glm::vec3(-3, 0, -3), glm::vec3(0, 1, 0), 45, 0);
     sf::Clock clock;
     while (window.isOpen()) {
         sf::Event event;
@@ -62,13 +62,14 @@ void Engine::MainLoop() {
         lastY = window.getSize().y / 2;
         sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
         camera.ProcessMouseMovement(xoffset, yoffset);
+        glClearColor(1, 1, 1, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader_program.Enable();
         GLfloat timeValue = clock.getElapsedTime().asSeconds();
         deltaTime = timeValue - lastFrame;
         lastFrame = timeValue;
         glm::mat4 projection =
-                glm::perspective(glm::radians(camera.Zoom), (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
+                glm::perspective(glm::radians(camera.zoom), (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
         GLint view_loc = shader_program.GetUniformLocation("view");
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
         GLint projection_loc = shader_program.GetUniformLocation("projection");

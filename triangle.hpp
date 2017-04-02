@@ -22,5 +22,19 @@ private:
     GLfloat x0, y0, z0, x, y, z;
 };
 
+class Line: public Model {
+public:
+    Line(GLfloat vertices[12], GLfloat x, GLfloat y, GLfloat z);
+    void Load(ShaderProgram& shader_program) override;
+    void Draw(ShaderProgram& shader_program) override;
+    void Update(float time) override;
+
+private:
+    GLfloat vertices[12];
+    VBO vbo;
+    VAO vao;
+    GLfloat x, y, z;
+};
+
 
 #endif //TRIANGLE_TRIANGLE_HPP
