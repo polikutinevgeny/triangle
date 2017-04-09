@@ -24,13 +24,16 @@ void Engine::MainLoop() {
     for (auto it: models) {
         it->Load(shader_program);
     }
-    GLfloat deltaTime = 0.0f;
-    GLfloat lastFrame = 0.0f;
+    GLfloat delta_time = 0.0f;
+    GLfloat last_frame = 0.0f;
     GLfloat lastX = window.getSize().x / 2, lastY = window.getSize().y / 2;
     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
     Camera camera(glm::vec3(-3, 0, -3), glm::vec3(0, 1, 0), 45, 0);
     sf::Clock clock;
     while (window.isOpen()) {
+        GLfloat time_value = clock.getElapsedTime().asSeconds();
+        delta_time = time_value - last_frame;
+        last_frame = time_value;
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -45,16 +48,22 @@ void Engine::MainLoop() {
             }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            camera.ProcessKeyboard(FORWARD, deltaTime);
+            camera.ProcessKeyboard(FORWARD, delta_time);
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            camera.ProcessKeyboard(BACKWARD, deltaTime);
+            camera.ProcessKeyboard(BACKWARD, delta_time);
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            camera.ProcessKeyboard(LEFT, deltaTime);
+            camera.ProcessKeyboard(LEFT, delta_time);
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            camera.ProcessKeyboard(RIGHT, deltaTime);
+            camera.ProcessKeyboard(RIGHT, delta_time);
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+            camera.ProcessKeyboard(UP, delta_time);
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+            camera.ProcessKeyboard(DOWN, delta_time);
         }
         GLfloat xoffset = sf::Mouse::getPosition(window).x - lastX;
         GLfloat yoffset = lastY - sf::Mouse::getPosition(window).y;
@@ -65,9 +74,6 @@ void Engine::MainLoop() {
         glClearColor(1, 1, 1, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         shader_program.Enable();
-        GLfloat timeValue = clock.getElapsedTime().asSeconds();
-        deltaTime = timeValue - lastFrame;
-        lastFrame = timeValue;
         glm::mat4 projection =
                 glm::perspective(glm::radians(camera.zoom), (GLfloat)window.getSize().x / (GLfloat)window.getSize().y, 0.1f, 100.f);
         GLint view_loc = shader_program.GetUniformLocation("view");
@@ -75,7 +81,7 @@ void Engine::MainLoop() {
         GLint projection_loc = shader_program.GetUniformLocation("projection");
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
         for (auto it: models) {
-            it->Update(timeValue);
+            it->Update(time_value);
             it->Draw(shader_program);
         }
         shader_program.Disable();

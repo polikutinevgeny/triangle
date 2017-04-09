@@ -54,16 +54,16 @@ int main() {
     engine.Assign(triangle3);
     engine.Assign(triangle4);
     GLfloat vertices_x[] = {
-            -10, 0, 0, 0, 0, 0,
-            10, 0, 0, 0, 0, 0,
+            -10, 0, 0, 1, 0, 0,
+            10, 0, 0, 0, 0, 1,
     };
     GLfloat vertices_z[] = {
-            0, 0, -10, 0, 0, 0,
-            0, 0, 10, 0, 0, 0,
+            0, 0, -10, 0, 0, 1,
+            0, 0, 10, 1, 0, 0,
     };
     for (int i = -10; i <= 10; ++i) {
-        engine.Assign(new Line(vertices_x, 0, 0, i));
-        engine.Assign(new Line(vertices_z, i, 0, 0));
+        engine.Assign(new Line(vertices_x, 0, -std::sqrt(3.f) / 2, i));
+        engine.Assign(new Line(vertices_z, i, -std::sqrt(3.f) / 2, 0));
     }
     engine.MainLoop();
     return 0;
