@@ -10,7 +10,23 @@ configure_file(vertex.vert vertex.vert COPYONLY)
 
 # Define sources and executable
 set(EXECUTABLE_NAME "triangle")
-add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp model.hpp triangle.hpp triangle.cpp engine.hpp engine.cpp camera.hpp camera.cpp)
+add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp model.hpp triangle.hpp triangle.cpp engine.hpp engine.cpp camera.hpp camera.cpp loaded_model.hpp loaded_model.cpp mesh.hpp mesh.cpp)
+
+add_custom_command(TARGET triangle PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/nanosuit $<TARGET_FILE_DIR:triangle>/nanosuit)
+
+add_custom_command(TARGET triangle PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/fighter $<TARGET_FILE_DIR:triangle>/fighter)
+
+add_custom_command(TARGET triangle PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/heli $<TARGET_FILE_DIR:triangle>/heli)
+
+add_custom_command(TARGET triangle PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/sw_fighter $<TARGET_FILE_DIR:triangle>/sw_fighter)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -34,3 +50,19 @@ if (GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
     target_link_libraries(${EXECUTABLE_NAME} ${GLEW_LIBRARIES})
 endif()
+
+find_package(ASSIMP REQUIRED)
+if (ASSIMP_FOUND)
+    include_directories(${ASSIMP_INCLUDE_DIRS})
+    target_link_libraries(${EXECUTABLE_NAME} ${ASSIMP_LIBRARIES})
+endif ()
+
+find_package(SOIL REQUIRED)
+include_directories(${SOIL_INCLUDE_PATH})
+target_link_libraries(${EXECUTABLE_NAME} ${SOIL_LIBRARY})
+
+find_package(FreeImagePlus REQUIRED)
+if (FREEIMAGEPLUS_FOUND)
+    include_directories(${FREEIMAGEPLUS_INCLUDE_PATH})
+    target_link_libraries(${EXECUTABLE_NAME} ${FREEIMAGEPLUS_INCLUDE_LIBRARY})
+endif (FREEIMAGEPLUS_FOUND)

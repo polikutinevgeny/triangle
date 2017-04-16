@@ -22,11 +22,6 @@ void Triangle::Draw(ShaderProgram& shader_program) {
     vao.Unbind();
 }
 
-void Triangle::Update(float time) {
-//    x = x0 + cosf(time);
-//    y = y0 + sinf(time);
-}
-
 void Triangle::Load(ShaderProgram &shader_program) {
     vao.Bind();
     vbo.SetData(sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
@@ -59,8 +54,4 @@ void Line::Draw(ShaderProgram &shader_program) {
     vao.Bind();
     glDrawArrays(GL_LINES, 0, 2);
     vao.Unbind();
-}
-
-void Line::Update(float time) {
-
 }
