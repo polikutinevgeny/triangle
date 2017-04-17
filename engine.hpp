@@ -6,17 +6,19 @@
 #include <vector>
 #include "model.hpp"
 #include "shader.hpp"
+#include "object.hpp"
 
 
 class Engine {
 public:
     Engine(sf::Window& window);
-    void Assign(Model *model);
+
+    void Assign(Object *object);
     void MainLoop();
     ~Engine();
 
 private:
-    std::vector<Model*> models;
+    std::vector<Object *> objects;
     sf::Window& window;
 };
 

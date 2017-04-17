@@ -36,5 +36,20 @@ private:
     GLfloat x, y, z;
 };
 
+class LightCube : public Model {
+public:
+    LightCube();
+
+    ~LightCube();
+
+    void Draw(ShaderProgram &shader_program) override;
+
+    ShaderProgram *sp;
+
+private:
+    GLfloat *vertices;
+    VBO vbo;
+    VAO vao;
+};
 
 #endif //TRIANGLE_TRIANGLE_HPP

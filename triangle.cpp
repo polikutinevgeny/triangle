@@ -55,3 +55,86 @@ void Line::Draw(ShaderProgram &shader_program) {
     glDrawArrays(GL_LINES, 0, 2);
     vao.Unbind();
 }
+
+void LightCube::Draw(ShaderProgram &shader_program) {
+    vao.Bind();
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    vao.Unbind();
+}
+
+LightCube::LightCube() {
+    vertices = new GLfloat[108]{
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, -0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+
+            -0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, -0.5f,
+            0.5f, -0.5f, 0.5f,
+            0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, 0.5f,
+            -0.5f, -0.5f, -0.5f,
+
+            -0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, -0.5f,
+            0.5f, 0.5f, 0.5f,
+            0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, 0.5f,
+            -0.5f, 0.5f, -0.5f
+    };
+    std::string vertex_shader = "#version 450 core\n"
+            "layout (location = 0) in vec3 position;\n"
+            "\n"
+            "uniform mat4 model;\n"
+            "uniform mat4 view;\n"
+            "uniform mat4 projection;\n"
+            "\n"
+            "void main()\n"
+            "{\n"
+            "    gl_Position = projection * view * model * vec4(position, 1.0f);\n"
+            "}";
+    std::string frag_shader = "#version 330 core\n"
+            "out vec4 color;\n"
+            "  \n"
+            "uniform vec3 lightColor;\n"
+            "\n"
+            "void main()\n"
+            "{\n"
+            "    color = vec4(lightColor, 1.0f);\n"
+            "}";
+    Shader vs(vertex_shader, GL_VERTEX_SHADER);
+    Shader fs(frag_shader, GL_FRAGMENT_SHADER);
+    sp = new ShaderProgram(vs, fs);
+    vao.Bind();
+    vbo.SetData(sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
+    vbo.SetAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) 0);
+    vao.Unbind();
+}
+
+LightCube::~LightCube() {
+    delete sp;
+}

@@ -23,6 +23,7 @@ Mesh LoadedModel::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
     std::vector<Texture> textures;
+    GLfloat shininess = 16.0f;
     for (GLuint i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
         glm::vec3 vector;
@@ -41,14 +42,14 @@ Mesh LoadedModel::processMesh(aiMesh *mesh, const aiScene *scene) {
             vertex.TexCoords = vec;
         } else
             vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-//        vector.x = mesh->mTangents[i].x;
-//        vector.y = mesh->mTangents[i].y;
-//        vector.z = mesh->mTangents[i].z;
-//        vertex.Tangent = vector;
-//        vector.x = mesh->mBitangents[i].x;
-//        vector.y = mesh->mBitangents[i].y;
-//        vector.z = mesh->mBitangents[i].z;
-//        vertex.Bitangent = vector;
+        vector.x = mesh->mTangents[i].x;
+        vector.y = mesh->mTangents[i].y;
+        vector.z = mesh->mTangents[i].z;
+        vertex.Tangent = vector;
+        vector.x = mesh->mBitangents[i].x;
+        vector.y = mesh->mBitangents[i].y;
+        vector.z = mesh->mBitangents[i].z;
+        vertex.Bitangent = vector;
         vertices.push_back(vertex);
     }
     for (GLuint i = 0; i < mesh->mNumFaces; i++) {
@@ -66,15 +67,18 @@ Mesh LoadedModel::processMesh(aiMesh *mesh, const aiScene *scene) {
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         std::vector<Texture> normalMaps = this->loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
         textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-//        std::vector<Texture> heightMaps = this->loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-//        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        std::vector<Texture> heightMaps = this->loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        material->Get(AI_MATKEY_SHININESS, shininess);
     }
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, shininess);
 }
 
 void LoadedModel::loadModel(std::string path) {
     Assimp::Importer importer;
-    const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene *scene = importer.ReadFile(path,
+                                             aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace |
+                                             aiProcess_GenSmoothNormals);
     if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
         return;
@@ -115,8 +119,7 @@ GLint TextureFromFile(const char *path, std::string directory) {
     glGenTextures(1, &textureID);
     int width, height;
     unsigned char *image = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-    printf("SOIL loading: '%s'\n", SOIL_last_result());
-    printf("%s\n", filename.c_str());
+    printf("SOIL loading: '%s': %s\n", SOIL_last_result(), filename.c_str());
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
     glGenerateMipmap(GL_TEXTURE_2D);

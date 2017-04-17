@@ -3,6 +3,8 @@
 struct Material {
     sampler2D diffuse;
     sampler2D specular;
+    sampler2D normal;
+    sampler2D height;
     float shininess;
 };
 
@@ -42,8 +44,11 @@ struct SpotLight {
 in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
+in mat3 TBN;
 
 out vec4 color;
+
+uniform bool UseNormalMap;
 
 uniform vec3 viewPos;
 uniform DirLight dirLight;
@@ -59,8 +64,14 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main() {
     vec3 norm = normalize(Normal);
+//    if (UseNormalMap) {
+//        norm = texture(material.normal, TexCoords).rgb;
+//        norm = normalize(norm * 2.0 - 1.0);
+//        norm = normalize(TBN * norm);
+//    }
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    vec3 result = vec3(0);
+    result = CalcDirLight(dirLight, norm, viewDir);
     for(int i = 0; i < PointLightNum; i++) {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     }
@@ -68,6 +79,7 @@ void main() {
             result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir);
     }
     color = vec4(result, 1.0);
+//    color = vec4((norm + 1) / 2.0, 1.0);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {

@@ -10,7 +10,7 @@ configure_file(vertex.vert vertex.vert COPYONLY)
 
 # Define sources and executable
 set(EXECUTABLE_NAME "triangle")
-add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp model.hpp triangle.hpp triangle.cpp engine.hpp engine.cpp camera.hpp camera.cpp loaded_model.hpp loaded_model.cpp mesh.hpp mesh.cpp)
+add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp model.hpp triangle.hpp triangle.cpp engine.hpp engine.cpp camera.hpp camera.cpp loaded_model.hpp loaded_model.cpp mesh.hpp mesh.cpp lightsources.hpp lightsources.cpp object.hpp object.cpp)
 
 add_custom_command(TARGET triangle PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -18,15 +18,15 @@ add_custom_command(TARGET triangle PRE_BUILD
 
 add_custom_command(TARGET triangle PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/fighter $<TARGET_FILE_DIR:triangle>/fighter)
+        ${CMAKE_SOURCE_DIR}/cyborg $<TARGET_FILE_DIR:triangle>/cyborg)
 
 add_custom_command(TARGET triangle PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/heli $<TARGET_FILE_DIR:triangle>/heli)
+        ${CMAKE_SOURCE_DIR}/planet $<TARGET_FILE_DIR:triangle>/planet)
 
 add_custom_command(TARGET triangle PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/sw_fighter $<TARGET_FILE_DIR:triangle>/sw_fighter)
+        ${CMAKE_SOURCE_DIR}/rock $<TARGET_FILE_DIR:triangle>/rock)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -58,11 +58,13 @@ if (ASSIMP_FOUND)
 endif ()
 
 find_package(SOIL REQUIRED)
-include_directories(${SOIL_INCLUDE_PATH})
-target_link_libraries(${EXECUTABLE_NAME} ${SOIL_LIBRARY})
+if (SOIL_FOUND)
+    include_directories(${SOIL_INCLUDE_PATH})
+    target_link_libraries(${EXECUTABLE_NAME} ${SOIL_LIBRARY})
+endif (SOIL_FOUND)
 
-find_package(FreeImagePlus REQUIRED)
-if (FREEIMAGEPLUS_FOUND)
-    include_directories(${FREEIMAGEPLUS_INCLUDE_PATH})
-    target_link_libraries(${EXECUTABLE_NAME} ${FREEIMAGEPLUS_INCLUDE_LIBRARY})
-endif (FREEIMAGEPLUS_FOUND)
+find_package(Freetype REQUIRED)
+if (FREETYPE_FOUND)
+    include_directories(${FREETYPE_INCLUDE_DIRS})
+    target_link_libraries(${EXECUTABLE_NAME} ${FREETYPE_LIBRARIES})
+endif (FREETYPE_FOUND)
