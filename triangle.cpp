@@ -130,7 +130,7 @@ LightCube::LightCube() {
     Shader fs(frag_shader, GL_FRAGMENT_SHADER);
     sp = new ShaderProgram(vs, fs);
     vao.Bind();
-    vbo.SetData(sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
+    vbo.SetData(108 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
     vbo.SetAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) 0);
     vao.Unbind();
 }

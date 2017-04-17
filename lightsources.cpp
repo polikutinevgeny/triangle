@@ -35,6 +35,7 @@ void PointLight::Visualize(glm::mat4 view, glm::mat4 projection) {
     cube.sp->Enable();
     glm::mat4 model;
     model = glm::translate(model, position);
+    model = glm::scale(model, glm::vec3(0.2));
     GLint model_loc = cube.sp->GetUniformLocation("model");
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
     GLint view_loc = cube.sp->GetUniformLocation("view");

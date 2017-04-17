@@ -46,7 +46,6 @@ public:
 
     ShaderProgram *sp;
 
-private:
     GLfloat *vertices;
     VBO vbo;
     VAO vao;
