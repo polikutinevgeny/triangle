@@ -11,13 +11,14 @@ public:
         this->loadModel(path);
     }
 
+    ~LoadedModel();
+
     void Load(std::shared_ptr<ShaderProgram> shader_program);
 
     void Draw() override;
 
-    std::vector<Mesh> meshes;
 private:
-//    std::vector<Mesh> meshes;
+    std::vector<Mesh> meshes;
     std::string directory;
     std::vector<Texture> textures_loaded;
 

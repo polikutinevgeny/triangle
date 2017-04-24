@@ -78,7 +78,7 @@ void LoadedModel::loadModel(std::string path) {
     Assimp::Importer importer;
     const aiScene *scene = importer.ReadFile(path,
                                              aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace |
-                                             aiProcess_GenSmoothNormals);
+                                             aiProcess_GenNormals | aiProcess_OptimizeMeshes);
     if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
         return;
@@ -116,6 +116,10 @@ void LoadedModel::Load(std::shared_ptr<ShaderProgram> shader_program) {
     shader = shader_program;
     for (GLuint i = 0; i < this->meshes.size(); i++)
         this->meshes[i].Load(shader);
+}
+
+LoadedModel::~LoadedModel() {
+
 }
 
 GLint TextureFromFile(const char *path, std::string directory) {

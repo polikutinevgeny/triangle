@@ -29,7 +29,7 @@ void Mesh::Draw() {
         }
     }
     glBindVertexArray(this->VAO);
-    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
     glBindVertexArray(0);
     for (GLuint i = 0; i < this->textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
@@ -40,13 +40,10 @@ void Mesh::Draw() {
 void Mesh::setupMesh() {
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
-    glGenBuffers(1, &this->EBO);
 
     glBindVertexArray(this->VAO);
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
     glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &this->vertices[0], GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -56,7 +53,6 @@ void Mesh::Load(std::shared_ptr<ShaderProgram> shader_program) {
     GLuint pos;
     glBindVertexArray(this->VAO);
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
     pos = shader->GetAttribLocation("position");
     glEnableVertexAttribArray(pos);
     glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) 0);
