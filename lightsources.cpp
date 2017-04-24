@@ -30,7 +30,9 @@ PointLight::PointLight(const glm::vec3 &position, GLfloat constant, GLfloat line
                        const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular,
                        std::shared_ptr<ShaderProgram> vis_shader) :
         position(position), constant(constant), linear(linear), quadratic(quadratic), ambient(ambient),
-        diffuse(diffuse), specular(specular), vis_shader(vis_shader) {}
+        diffuse(diffuse), specular(specular), vis_shader(vis_shader) {
+    cube.Load(vis_shader);
+}
 
 void PointLight::Visualize(glm::mat4 view, glm::mat4 projection) {
     vis_shader->Enable();
@@ -44,7 +46,7 @@ void PointLight::Visualize(glm::mat4 view, glm::mat4 projection) {
     GLint projection_loc = vis_shader->GetUniformLocation("projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
     glUniform3f(vis_shader->GetUniformLocation("lightColor"), 1, 1, 1);
-    cube.Draw(vis_shader);
+    cube.Draw();
     vis_shader->Disable();
 }
 
@@ -57,6 +59,7 @@ PointLight::PointLight(PointLight &&other) {
     diffuse = other.diffuse;
     specular = other.specular;
     vis_shader = other.vis_shader;
+    cube.Load(vis_shader);
 }
 
 void SpotLight::Load(std::shared_ptr<ShaderProgram> shader, std::string name) {

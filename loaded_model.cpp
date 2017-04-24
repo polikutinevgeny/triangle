@@ -4,9 +4,9 @@
 
 GLint TextureFromFile(const char *path, std::string directory);
 
-void LoadedModel::Draw(std::shared_ptr<ShaderProgram> shader) {
+void LoadedModel::Draw() {
     for (GLuint i = 0; i < this->meshes.size(); i++)
-        this->meshes[i].Draw(shader);
+        this->meshes[i].Draw();
 }
 
 void LoadedModel::processNode(aiNode *node, const aiScene *scene) {
@@ -110,6 +110,12 @@ std::vector<Texture> LoadedModel::loadMaterialTextures(aiMaterial *mat, aiTextur
         }
     }
     return textures;
+}
+
+void LoadedModel::Load(std::shared_ptr<ShaderProgram> shader_program) {
+    shader = shader_program;
+    for (GLuint i = 0; i < this->meshes.size(); i++)
+        this->meshes[i].Load(shader);
 }
 
 GLint TextureFromFile(const char *path, std::string directory) {

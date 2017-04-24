@@ -6,6 +6,7 @@
 #include "utility.hpp"
 #include "camera.hpp"
 #include "lightsources.hpp"
+#include "loaded_model.hpp"
 #include "object.hpp"
 //#include <freetype2/ft2build.h>
 //#include FT_FREETYPE_H
@@ -13,6 +14,7 @@
 
 void Engine::Assign(Object *object) {
     objects.push_back(object);
+    object->Load(main_shader);
 }
 
 Engine::~Engine() {
@@ -25,9 +27,6 @@ void Engine::MainLoop() {
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    Shader vertex_shader(ReadFile("vertex.vert"), GL_VERTEX_SHADER);
-//    Shader fragment_shader(ReadFile("fragment.frag"), GL_FRAGMENT_SHADER);
-//    ShaderProgram shader_program(vertex_shader, fragment_shader);
     GLfloat delta_time = 0.0f;
     GLfloat last_frame = 0.0f;
     GLfloat lastX = window.getSize().x / 2, lastY = window.getSize().y / 2;
@@ -124,8 +123,10 @@ void Engine::MainLoop() {
         GLint projection_loc = main_shader->GetUniformLocation("projection");
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
+        glUniform3f(main_shader->GetUniformLocation("lightColor"), 1, 1, 1);
+
         for (auto it: objects) {
-            it->Draw(main_shader);
+            it->Draw();
         }
 
         main_shader->Disable();

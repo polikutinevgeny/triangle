@@ -11,13 +11,19 @@ Object::~Object() {
     delete model;
 }
 
-void Object::Draw(std::shared_ptr<ShaderProgram> shader) {
+void Object::Draw() {
     glm::mat4 m;
     m = glm::translate(m, position);
     m = glm::scale(m, scale);
     m = glm::rotate(m, (glm::mediump_float) rotation.x, glm::vec3(1.f, 0.f, 0.f));
     m = glm::rotate(m, (glm::mediump_float) rotation.y, glm::vec3(0.f, 1.f, 0.f));
     m = glm::rotate(m, (glm::mediump_float) rotation.z, glm::vec3(0.f, 0.f, 1.f));
+    GLuint t = shader->GetUniformLocation("model");
     glUniformMatrix4fv(shader->GetUniformLocation("model"), 1, GL_FALSE, glm::value_ptr(m));
-    model->Draw(shader);
+    model->Draw();
+}
+
+void Object::Load(std::shared_ptr<ShaderProgram> shader_program) {
+    shader = shader_program;
+    model->Load(shader);
 }

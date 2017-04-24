@@ -12,7 +12,11 @@ public:
 
     ~Object();
 
-    void Draw(std::shared_ptr<ShaderProgram> shader);
+    void Load(std::shared_ptr<ShaderProgram> shader_program);
+
+    void Draw();
+
+    std::shared_ptr<ShaderProgram> shader;
 
     Model *model;
     glm::vec3 position;

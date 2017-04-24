@@ -36,7 +36,12 @@ public:
     Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures,
          GLfloat shininess);
 
-    void Draw(std::shared_ptr<ShaderProgram> shader);
+
+    void Load(std::shared_ptr<ShaderProgram> shader_program);
+
+    void Draw();
+
+    std::shared_ptr<ShaderProgram> shader;
 
 private:
     GLuint VAO, VBO, EBO;

@@ -12,9 +12,9 @@ class Triangle: public Model {
 public:
     Triangle(GLfloat vertices[18], GLfloat x, GLfloat y, GLfloat z);
 
-    void Load(ShaderProgram &shader_program);
+    void Load(std::shared_ptr<ShaderProgram> shader_program) override;
 
-    void Draw(std::shared_ptr<ShaderProgram> shader_program) override;
+    void Draw() override;
 
 private:
     GLfloat vertices[18];
@@ -27,9 +27,9 @@ class Line: public Model {
 public:
     Line(GLfloat vertices[12], GLfloat x, GLfloat y, GLfloat z);
 
-    void Load(ShaderProgram &shader_program);
+    void Load(std::shared_ptr<ShaderProgram> shader_program) override;
 
-    void Draw(std::shared_ptr<ShaderProgram> shader_program) override;
+    void Draw() override;
 
 private:
     GLfloat vertices[12];
@@ -42,7 +42,9 @@ class LightCube : public Model {
 public:
     LightCube();
 
-    void Draw(std::shared_ptr<ShaderProgram> shader_program) override;
+    void Load(std::shared_ptr<ShaderProgram> shader_program) override;
+
+    void Draw() override;
 
     std::shared_ptr<ShaderProgram> sp;
 

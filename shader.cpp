@@ -45,10 +45,10 @@ void ShaderProgram::Disable() {
     glUseProgram(0);
 }
 
-GLuint ShaderProgram::GetUniformLocation(std::string name) {
+GLuint ShaderProgram::GetUniformLocation(std::string name) const {
     return glGetUniformLocation(shader_program_loc, name.c_str());;
 }
 
-GLuint ShaderProgram::GetAttribLocation(std::string name) {
+GLuint ShaderProgram::GetAttribLocation(std::string name) const {
     return glGetAttribLocation(shader_program_loc, name.c_str());
 }

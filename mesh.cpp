@@ -7,7 +7,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vecto
     this->setupMesh();
 }
 
-void Mesh::Draw(std::shared_ptr<ShaderProgram> shader) {
+void Mesh::Draw() {
     glUniform1f(shader->GetUniformLocation("material.shininess"), shininess);
     glUniform1ui(shader->GetUniformLocation("UseNormalMap"), 0);
     for (GLuint i = 0; i < this->textures.size(); i++) {
@@ -47,15 +47,33 @@ void Mesh::setupMesh() {
     glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &this->vertices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) 0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Normal));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, TexCoords));
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Tangent));
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Bitangent));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void Mesh::Load(std::shared_ptr<ShaderProgram> shader_program) {
+    shader = shader_program;
+    GLuint pos;
+    glBindVertexArray(this->VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
+    pos = shader->GetAttribLocation("position");
+    glEnableVertexAttribArray(pos);
+    glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) 0);
+    pos = shader->GetAttribLocation("normal");
+    glEnableVertexAttribArray(pos);
+    glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Normal));
+    pos = shader->GetAttribLocation("texCoords");
+    glEnableVertexAttribArray(pos);
+    glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, TexCoords));
+    pos = shader->GetAttribLocation("tangent");
+    glEnableVertexAttribArray(pos);
+    glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Tangent));
+    pos = shader->GetAttribLocation("bitangent");
+    glEnableVertexAttribArray(pos);
+    glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Bitangent));
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
