@@ -8,6 +8,7 @@
 #include "model.hpp"
 #include "shader.hpp"
 #include "object.hpp"
+#include "lightsources.hpp"
 
 
 class Engine {
@@ -18,10 +19,22 @@ public:
     void MainLoop();
     ~Engine();
 
+    void AddDirLight(DirLight *source);
+
+    void AddSpotLight(SpotLight *source);
+
+    void AddPointLight(PointLight *source);
+
+    void AddFlashLight(SpotLight *source);
+
     std::shared_ptr<ShaderProgram> main_shader;
     std::shared_ptr<ShaderProgram> white_shader;
 
 private:
+    SpotLight *flashlight;
+    std::vector<DirLight *> dirlights;
+    std::vector<SpotLight *> spotlights;
+    std::vector<PointLight *> pointlights;
     std::vector<Object *> objects;
     sf::Window& window;
 };

@@ -16,6 +16,10 @@ DirLight::DirLight(const glm::vec3 &direction, const glm::vec3 ambient, const gl
                    const glm::vec3 specular)
         : direction(direction), ambient(ambient), diffuse(diffuse), specular(specular) {}
 
+void DirLight::Visualize(glm::mat4 view, glm::mat4 projection) {
+
+}
+
 void PointLight::Load(std::shared_ptr<ShaderProgram> shader, std::string name) {
     glUniform3f(shader->GetUniformLocation(name + ".position"), position.x, position.y, position.z);
     glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r, ambient.g, ambient.b);
@@ -45,7 +49,7 @@ void PointLight::Visualize(glm::mat4 view, glm::mat4 projection) {
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
     GLint projection_loc = vis_shader->GetUniformLocation("projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform3f(vis_shader->GetUniformLocation("lightColor"), 1, 1, 1);
+    glUniform3f(vis_shader->GetUniformLocation("lightColor"), diffuse.r, diffuse.g, diffuse.b);
     cube.Draw();
     vis_shader->Disable();
 }
@@ -82,3 +86,7 @@ SpotLight::SpotLight(const glm::vec3 &position, const glm::vec3 &direction, GLfl
                                                                             constant(constant), linear(linear),
                                                                             quadratic(quadratic), ambient(ambient),
                                                                             diffuse(diffuse), specular(specular) {}
+
+void SpotLight::Visualize(glm::mat4 view, glm::mat4 projection) {
+
+}

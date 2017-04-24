@@ -42,6 +42,8 @@ class LightCube : public Model {
 public:
     LightCube();
 
+    ~LightCube();
+
     void Load(std::shared_ptr<ShaderProgram> shader_program) override;
 
     void Draw() override;

@@ -128,3 +128,7 @@ void LightCube::Load(std::shared_ptr<ShaderProgram> shader_program) {
     vbo.SetAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) 0);
     vao.Unbind();
 }
+
+LightCube::~LightCube() {
+    delete[] vertices;
+}

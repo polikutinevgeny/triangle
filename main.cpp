@@ -26,13 +26,6 @@ int main() {
     engine.Assign(
             new Object(cyborg, glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.f, 180.f, 0.f), glm::vec3(1.2f, 1.2f, 1.2f)));
 
-    GLfloat vertices1[] = {
-            1, -std::sqrt(3.f) / 2, 0, 1, 0, 0,
-            std::cos(PI * 2 / 3), -std::sqrt(3.f) / 2, std::sin(PI * 2 / 3), 1, 0, 0,
-            std::cos(-PI * 2 / 3), -std::sqrt(3.f) / 2, std::sin(-PI * 2 / 3), 1, 0, 0,
-    };
-    engine.Assign(new Object(new Triangle(vertices1, 0, 0, 0), glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.f, 180.f, 0.f),
-                             glm::vec3(1.2f, 1.2f, 1.2f)));
     GLfloat vertices_x[] = {
             -10, 0, 0, 1, 0, 0,
             10, 0, 0, 0, 0, 1,
@@ -47,6 +40,33 @@ int main() {
         engine.Assign(new Object(new Line(vertices_z, i, -std::sqrt(3.f) / 2, 0), glm::vec3(0.0f, 0.0f, 0.0f),
                                  glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
     }
+
+    DirLight dirlight(glm::vec3(-0.f, -1.0f, -0.f), glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.6f, 0.6f, 0.6f),
+                      glm::vec3(0.5f, 0.5f, 0.5f));
+
+    std::vector<glm::vec3> pointLightPositions = {
+            glm::vec3(0.7f, 0.2f, 2.0f),
+            glm::vec3(2.3f, -3.3f, -4.0f),
+            glm::vec3(-4.0f, 2.0f, -12.0f),
+            glm::vec3(0.0f, 0.0f, -3.0f)
+    };
+
+    for (int i = 0; i < pointLightPositions.size() - 2; ++i) {
+        engine.AddPointLight(new PointLight(pointLightPositions[i], 1.0, 0.09, 0.032, glm::vec3(0.2f, 0.2f, 0.2f),
+                                            glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f),
+                                            engine.white_shader));
+    }
+
+    engine.AddPointLight(new PointLight(pointLightPositions[2], 1.0, 0.09, 0.032, glm::vec3(0.f, 0.2f, 0.f),
+                                        glm::vec3(0.f, 0.8f, 0.f), glm::vec3(0.0f, 1.0f, 0.0f), engine.white_shader));
+
+    engine.AddPointLight(new PointLight(pointLightPositions[3], 1.0, 0.09, 0.032, glm::vec3(0.2f, 0.f, 0.f),
+                                        glm::vec3(0.8f, 0.f, 0.f), glm::vec3(1.0f, 0.0f, 0.0f), engine.white_shader));
+
+    engine.AddFlashLight(
+            new SpotLight(glm::vec3(0), glm::vec3(0), 12.5f, 15.0f, 1.0f, 0.09f, 0.032f, glm::vec3(0), glm::vec3(1),
+                          glm::vec3(1)));
+
 //    LoadedModel* cube = new LoadedModel(static_cast<GLchar *>("cube.ply"));
 //        engine.Assign(
 //            new Object(cube, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));

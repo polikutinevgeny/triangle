@@ -21,6 +21,15 @@ Engine::~Engine() {
     for (auto it: objects) {
         delete (it);
     }
+    for (auto it: dirlights) {
+        delete (it);
+    }
+    for (auto it: spotlights) {
+        delete (it);
+    }
+    for (auto it: pointlights) {
+        delete (it);
+    }
 }
 
 void Engine::MainLoop() {
@@ -34,24 +43,7 @@ void Engine::MainLoop() {
     Camera camera(glm::vec3(-3, 0, -3), glm::vec3(0, 1, 0), 45, 0);
     sf::Clock clock;
 
-    DirLight dirlight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.4f, 0.4f, 0.4f),
-                      glm::vec3(0.5f, 0.5f, 0.5f));
-    std::vector<PointLight> pointlights;
-    std::vector<SpotLight> spotlights;
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    std::vector<glm::vec3> pointLightPositions = {
-            glm::vec3(0.7f, 0.2f, 2.0f),
-            glm::vec3(2.3f, -3.3f, -4.0f),
-            glm::vec3(-4.0f, 2.0f, -12.0f),
-            glm::vec3(0.0f, 0.0f, -3.0f)
-    };
-    for (int i = 0; i < pointLightPositions.size(); ++i) {
-        pointlights.push_back(PointLight(pointLightPositions[i], 1.0, 0.09, 0.032, glm::vec3(0.05f, 0.05f, 0.05f),
-                                         glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), white_shader));
-    }
-    spotlights.push_back(
-            SpotLight(camera.position, camera.front, 12.5f, 15.0f, 1.0f, 0.09f, 0.032f, glm::vec3(0), glm::vec3(1),
-                      glm::vec3(1)));
 
     while (window.isOpen()) {
         GLfloat time_value = clock.getElapsedTime().asSeconds();
@@ -97,19 +89,23 @@ void Engine::MainLoop() {
         glClearColor(0.1, 0.1, 0.1, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        spotlights[0].position = camera.position;
-        spotlights[0].direction = camera.front;
+        flashlight->position = camera.position;
+        flashlight->direction = camera.front;
 
         main_shader->Enable();
 
+        glUniform1i(main_shader->GetUniformLocation("DirLightNum"), static_cast<GLint>(dirlights.size()));
         glUniform1i(main_shader->GetUniformLocation("PointLightNum"), static_cast<GLint>(pointlights.size()));
         glUniform1i(main_shader->GetUniformLocation("SpotLightNum"), static_cast<GLint>(spotlights.size()));
 
+        for (int i = 0; i < dirlights.size(); ++i) {
+            dirlights[i]->Load(main_shader, "pointLights[" + std::to_string(i) + "]");
+        }
         for (int i = 0; i < pointlights.size(); ++i) {
-            pointlights[i].Load(main_shader, "pointLights[" + std::to_string(i) + "]");
+            pointlights[i]->Load(main_shader, "pointLights[" + std::to_string(i) + "]");
         }
         for (int i = 0; i < spotlights.size(); ++i) {
-            spotlights[i].Load(main_shader, "spotLights[" + std::to_string(i) + "]");
+            spotlights[i]->Load(main_shader, "spotLights[" + std::to_string(i) + "]");
         }
 
         GLint viewPosLoc = main_shader->GetUniformLocation("viewPos");
@@ -130,16 +126,33 @@ void Engine::MainLoop() {
         main_shader->Disable();
 
         for (int i = 0; i < pointlights.size(); ++i) {
-            pointlights[i].Visualize(camera.GetViewMatrix(), projection);
+            pointlights[i]->Visualize(camera.GetViewMatrix(), projection);
         }
 
         window.display();
     }
 }
 
-Engine::Engine(sf::Window &window) : window(window) {
+Engine::Engine(sf::Window &window) : window(window), flashlight(nullptr) {
     window.setActive();
     window.setMouseCursorVisible(false);
     glewInit();
     glViewport(0, 0, window.getSize().x, window.getSize().y);
+}
+
+void Engine::AddDirLight(DirLight *source) {
+    dirlights.push_back(source);
+}
+
+void Engine::AddSpotLight(SpotLight *source) {
+    spotlights.push_back(source);
+}
+
+void Engine::AddPointLight(PointLight *source) {
+    pointlights.push_back(source);
+}
+
+void Engine::AddFlashLight(SpotLight *source) {
+    spotlights.push_back(source);
+    flashlight = source;
 }
