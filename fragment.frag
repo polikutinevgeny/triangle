@@ -49,6 +49,7 @@ in mat3 TBN;
 out vec4 color;
 
 uniform bool UseNormalMap;
+uniform bool FillWhite;
 
 uniform vec3 viewPos;
 uniform DirLight dirLight;
@@ -63,6 +64,10 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main() {
+    if (FillWhite) {
+        color = vec4(1.0);
+        return;
+    }
     vec3 norm = normalize(Normal);
 //    if (UseNormalMap) {
 //        norm = texture(material.normal, TexCoords).rgb;

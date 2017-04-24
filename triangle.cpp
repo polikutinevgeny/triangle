@@ -20,9 +20,11 @@ void Triangle::Draw() {
     model = glm::translate(model, glm::vec3(x, y, z));
     GLint model_loc = shader->GetUniformLocation("model");
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+    glUniform1i(shader->GetUniformLocation("FillWhite"), 1);
     vao.Bind();
     glDrawArrays(GL_TRIANGLES, 0, 3);
     vao.Unbind();
+    glUniform1i(shader->GetUniformLocation("FillWhite"), 0);
 }
 
 void Triangle::Load(std::shared_ptr<ShaderProgram> shader_program) {
@@ -57,9 +59,11 @@ void Line::Draw() {
     model = glm::translate(model, glm::vec3(x, y, z));
     GLint model_loc = shader->GetUniformLocation("model");
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
+    glUniform1i(shader->GetUniformLocation("FillWhite"), 1);
     vao.Bind();
     glDrawArrays(GL_LINES, 0, 2);
     vao.Unbind();
+    glUniform1i(shader->GetUniformLocation("FillWhite"), 0);
 }
 
 void LightCube::Draw() {

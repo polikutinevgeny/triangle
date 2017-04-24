@@ -13,12 +13,9 @@ int main() {
     sf::ContextSettings contextSettings(24, 8, 0, 4, 5, sf::ContextSettings::Attribute::Core);
     sf::Window window(sf::VideoMode(1980, 1000), "Triangle", sf::Style::Default, contextSettings);
     Engine engine(window);
-//    engine.main_shader = std::make_shared<ShaderProgram>(
-//            Shader(ReadFile("vertex.vert"), GL_VERTEX_SHADER),
-//            Shader(ReadFile("fragment.frag"), GL_FRAGMENT_SHADER));
     engine.main_shader = std::make_shared<ShaderProgram>(
-            Shader(ReadFile("white.vert"), GL_VERTEX_SHADER),
-            Shader(ReadFile("white.frag"), GL_FRAGMENT_SHADER));
+            Shader(ReadFile("vertex.vert"), GL_VERTEX_SHADER),
+            Shader(ReadFile("fragment.frag"), GL_FRAGMENT_SHADER));
     engine.white_shader = std::make_shared<ShaderProgram>(
             Shader(ReadFile("white.vert"), GL_VERTEX_SHADER),
             Shader(ReadFile("white.frag"), GL_FRAGMENT_SHADER));
@@ -34,7 +31,22 @@ int main() {
             std::cos(PI * 2 / 3), -std::sqrt(3.f) / 2, std::sin(PI * 2 / 3), 1, 0, 0,
             std::cos(-PI * 2 / 3), -std::sqrt(3.f) / 2, std::sin(-PI * 2 / 3), 1, 0, 0,
     };
-//    engine.Assign(new Object(new Triangle(vertices1, 0, 0, 0), glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.f, 180.f, 0.f), glm::vec3(1.2f, 1.2f, 1.2f)));
+    engine.Assign(new Object(new Triangle(vertices1, 0, 0, 0), glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3(0.f, 180.f, 0.f),
+                             glm::vec3(1.2f, 1.2f, 1.2f)));
+    GLfloat vertices_x[] = {
+            -10, 0, 0, 1, 0, 0,
+            10, 0, 0, 0, 0, 1,
+    };
+    GLfloat vertices_z[] = {
+            0, 0, -10, 0, 0, 1,
+            0, 0, 10, 1, 0, 0,
+    };
+    for (int i = -10; i <= 10; ++i) {
+        engine.Assign(new Object(new Line(vertices_x, 0, -std::sqrt(3.f) / 2, i), glm::vec3(0.0f, 0.0f, 0.0f),
+                                 glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
+        engine.Assign(new Object(new Line(vertices_z, i, -std::sqrt(3.f) / 2, 0), glm::vec3(0.0f, 0.0f, 0.0f),
+                                 glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
+    }
 //    LoadedModel* cube = new LoadedModel(static_cast<GLchar *>("cube.ply"));
 //        engine.Assign(
 //            new Object(cube, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));

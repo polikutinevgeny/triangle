@@ -123,8 +123,6 @@ void Engine::MainLoop() {
         GLint projection_loc = main_shader->GetUniformLocation("projection");
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        glUniform3f(main_shader->GetUniformLocation("lightColor"), 1, 1, 1);
-
         for (auto it: objects) {
             it->Draw();
         }
