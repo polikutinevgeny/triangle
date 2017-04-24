@@ -7,6 +7,8 @@ set(SOURCE_FILES main.cpp)
 
 configure_file(fragment.frag fragment.frag COPYONLY)
 configure_file(vertex.vert vertex.vert COPYONLY)
+configure_file(white.frag white.frag COPYONLY)
+configure_file(white.vert white.vert COPYONLY)
 
 # Define sources and executable
 set(EXECUTABLE_NAME "triangle")

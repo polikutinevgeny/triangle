@@ -4,7 +4,7 @@
 
 GLint TextureFromFile(const char *path, std::string directory);
 
-void LoadedModel::Draw(ShaderProgram &shader) {
+void LoadedModel::Draw(std::shared_ptr<ShaderProgram> shader) {
     for (GLuint i = 0; i < this->meshes.size(); i++)
         this->meshes[i].Draw(shader);
 }

@@ -22,9 +22,12 @@ Engine::~Engine() {
 }
 
 void Engine::MainLoop() {
-    Shader vertex_shader(ReadFile("vertex.vert"), GL_VERTEX_SHADER);
-    Shader fragment_shader(ReadFile("fragment.frag"), GL_FRAGMENT_SHADER);
-    ShaderProgram shader_program(vertex_shader, fragment_shader);
+    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    Shader vertex_shader(ReadFile("vertex.vert"), GL_VERTEX_SHADER);
+//    Shader fragment_shader(ReadFile("fragment.frag"), GL_FRAGMENT_SHADER);
+//    ShaderProgram shader_program(vertex_shader, fragment_shader);
     GLfloat delta_time = 0.0f;
     GLfloat last_frame = 0.0f;
     GLfloat lastX = window.getSize().x / 2, lastY = window.getSize().y / 2;
@@ -45,7 +48,7 @@ void Engine::MainLoop() {
     };
     for (int i = 0; i < pointLightPositions.size(); ++i) {
         pointlights.push_back(PointLight(pointLightPositions[i], 1.0, 0.09, 0.032, glm::vec3(0.05f, 0.05f, 0.05f),
-                                         glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f)));
+                                         glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f), white_shader));
     }
     spotlights.push_back(
             SpotLight(camera.position, camera.front, 12.5f, 15.0f, 1.0f, 0.09f, 0.032f, glm::vec3(0), glm::vec3(1),
@@ -98,34 +101,34 @@ void Engine::MainLoop() {
         spotlights[0].position = camera.position;
         spotlights[0].direction = camera.front;
 
-        shader_program.Enable();
+        main_shader->Enable();
 
-        glUniform1i(shader_program.GetUniformLocation("PointLightNum"), static_cast<GLint>(pointlights.size()));
-        glUniform1i(shader_program.GetUniformLocation("SpotLightNum"), static_cast<GLint>(spotlights.size()));
+        glUniform1i(main_shader->GetUniformLocation("PointLightNum"), static_cast<GLint>(pointlights.size()));
+        glUniform1i(main_shader->GetUniformLocation("SpotLightNum"), static_cast<GLint>(spotlights.size()));
 
         for (int i = 0; i < pointlights.size(); ++i) {
-            pointlights[i].Load(shader_program, "pointLights[" + std::to_string(i) + "]");
+            pointlights[i].Load(main_shader, "pointLights[" + std::to_string(i) + "]");
         }
         for (int i = 0; i < spotlights.size(); ++i) {
-            spotlights[i].Load(shader_program, "spotLights[" + std::to_string(i) + "]");
+            spotlights[i].Load(main_shader, "spotLights[" + std::to_string(i) + "]");
         }
 
-        GLint viewPosLoc = shader_program.GetUniformLocation("viewPos");
+        GLint viewPosLoc = main_shader->GetUniformLocation("viewPos");
         glUniform3f(viewPosLoc, camera.position.x, camera.position.y, camera.position.z);
 
         glm::mat4 projection =
                 glm::perspective(glm::radians(camera.zoom), (GLfloat) window.getSize().x / (GLfloat) window.getSize().y,
                                  0.1f, 100.f);
-        GLint view_loc = shader_program.GetUniformLocation("view");
+        GLint view_loc = main_shader->GetUniformLocation("view");
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
-        GLint projection_loc = shader_program.GetUniformLocation("projection");
+        GLint projection_loc = main_shader->GetUniformLocation("projection");
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
 
         for (auto it: objects) {
-            it->Draw(shader_program);
+            it->Draw(main_shader);
         }
 
-        shader_program.Disable();
+        main_shader->Disable();
 
         for (int i = 0; i < pointlights.size(); ++i) {
             pointlights[i].Visualize(camera.GetViewMatrix(), projection);
@@ -140,7 +143,4 @@ Engine::Engine(sf::Window &window) : window(window) {
     window.setMouseCursorVisible(false);
     glewInit();
     glViewport(0, 0, window.getSize().x, window.getSize().y);
-    glEnable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

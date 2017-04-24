@@ -11,7 +11,7 @@ public:
         this->loadModel(path);
     }
 
-    void Draw(ShaderProgram &shader) override;
+    void Draw(std::shared_ptr<ShaderProgram> shader) override;
 
 private:
     std::vector<Mesh> meshes;

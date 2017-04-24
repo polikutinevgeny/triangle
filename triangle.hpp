@@ -13,7 +13,8 @@ public:
     Triangle(GLfloat vertices[18], GLfloat x, GLfloat y, GLfloat z);
 
     void Load(ShaderProgram &shader_program);
-    void Draw(ShaderProgram& shader_program) override;
+
+    void Draw(std::shared_ptr<ShaderProgram> shader_program) override;
 
 private:
     GLfloat vertices[18];
@@ -27,7 +28,8 @@ public:
     Line(GLfloat vertices[12], GLfloat x, GLfloat y, GLfloat z);
 
     void Load(ShaderProgram &shader_program);
-    void Draw(ShaderProgram& shader_program) override;
+
+    void Draw(std::shared_ptr<ShaderProgram> shader_program) override;
 
 private:
     GLfloat vertices[12];
@@ -40,11 +42,9 @@ class LightCube : public Model {
 public:
     LightCube();
 
-    ~LightCube();
+    void Draw(std::shared_ptr<ShaderProgram> shader_program) override;
 
-    void Draw(ShaderProgram &shader_program) override;
-
-    ShaderProgram *sp;
+    std::shared_ptr<ShaderProgram> sp;
 
     GLfloat *vertices;
     VBO vbo;

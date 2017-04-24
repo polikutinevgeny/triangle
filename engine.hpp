@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <SFML/Window.hpp>
 #include <vector>
+#include <memory>
 #include "model.hpp"
 #include "shader.hpp"
 #include "object.hpp"
@@ -16,6 +17,9 @@ public:
     void Assign(Object *object);
     void MainLoop();
     ~Engine();
+
+    std::shared_ptr<ShaderProgram> main_shader;
+    std::shared_ptr<ShaderProgram> white_shader;
 
 private:
     std::vector<Object *> objects;

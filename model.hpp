@@ -2,12 +2,14 @@
 #define TRIANGLE_MODEL_HPP
 
 #include "shader.hpp"
+#include <memory>
 
 
 class Model {
 public:
     virtual ~Model() {};
-    virtual void Draw(ShaderProgram& shader_program) = 0;
+
+    virtual void Draw(std::shared_ptr<ShaderProgram> shader_program) = 0;
 };
 
 

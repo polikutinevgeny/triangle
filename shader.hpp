@@ -19,7 +19,7 @@ private:
 
 class ShaderProgram {
 public:
-    ShaderProgram(Shader &vertex_shader, Shader &fragment_shader);
+    ShaderProgram(const Shader &vertex_shader, const Shader &fragment_shader);
     ~ShaderProgram();
     void Enable();
     void Disable();

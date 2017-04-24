@@ -7,24 +7,24 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vecto
     this->setupMesh();
 }
 
-void Mesh::Draw(ShaderProgram &shader) {
-    glUniform1f(shader.GetUniformLocation("material.shininess"), shininess);
-    glUniform1ui(shader.GetUniformLocation("UseNormalMap"), 0);
+void Mesh::Draw(std::shared_ptr<ShaderProgram> shader) {
+    glUniform1f(shader->GetUniformLocation("material.shininess"), shininess);
+    glUniform1ui(shader->GetUniformLocation("UseNormalMap"), 0);
     for (GLuint i = 0; i < this->textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         std::string name = this->textures[i].type;
         if (name == "texture_diffuse") {
-            glUniform1i(shader.GetUniformLocation("material.diffuse"), i);
+            glUniform1i(shader->GetUniformLocation("material.diffuse"), i);
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
         } else if (name == "texture_specular") {
-            glUniform1i(shader.GetUniformLocation("material.specular"), i);
+            glUniform1i(shader->GetUniformLocation("material.specular"), i);
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
         } else if (name == "texture_normal") {
-            glUniform1ui(shader.GetUniformLocation("UseNormalMap"), 1);
-            glUniform1i(shader.GetUniformLocation("material.normal"), i);
+            glUniform1ui(shader->GetUniformLocation("UseNormalMap"), 1);
+            glUniform1i(shader->GetUniformLocation("material.normal"), i);
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
         } else if (name == "texture_height") {
-            glUniform1i(shader.GetUniformLocation("material.height"), i);
+            glUniform1i(shader->GetUniformLocation("material.height"), i);
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
         }
     }

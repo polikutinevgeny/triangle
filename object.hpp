@@ -4,6 +4,7 @@
 #include "model.hpp"
 #include "shader.hpp"
 #include <glm/glm.hpp>
+#include <memory>
 
 class Object {
 public:
@@ -11,7 +12,7 @@ public:
 
     ~Object();
 
-    void Draw(ShaderProgram &shader);
+    void Draw(std::shared_ptr<ShaderProgram> shader);
 
     Model *model;
     glm::vec3 position;

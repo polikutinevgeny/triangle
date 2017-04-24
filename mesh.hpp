@@ -9,6 +9,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <memory>
 
 struct Vertex {
     glm::vec3 Position;
@@ -35,7 +36,7 @@ public:
     Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<Texture> textures,
          GLfloat shininess);
 
-    void Draw(ShaderProgram &shader);
+    void Draw(std::shared_ptr<ShaderProgram> shader);
 
 private:
     GLuint VAO, VBO, EBO;
