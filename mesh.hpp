@@ -10,6 +10,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <memory>
+//#include "vao.hpp"
+//#include "vbo.hpp"
 
 struct Vertex {
     glm::vec3 Position;
@@ -44,7 +46,9 @@ public:
     std::shared_ptr<ShaderProgram> shader;
 
 private:
-    GLuint VAO, VBO, EBO;
+//    VAO vao;
+//    VBO vbo;
+    GLuint VAO, VBO;
 
     void setupMesh();
 };

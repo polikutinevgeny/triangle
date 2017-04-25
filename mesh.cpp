@@ -28,9 +28,11 @@ void Mesh::Draw() {
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
         }
     }
+//    vao.Bind();
     glBindVertexArray(this->VAO);
     glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
     glBindVertexArray(0);
+//    vao.Unbind();
     for (GLuint i = 0; i < this->textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -40,16 +42,25 @@ void Mesh::Draw() {
 void Mesh::setupMesh() {
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
-
     glBindVertexArray(this->VAO);
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
     glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &this->vertices[0], GL_STATIC_DRAW);
+//    vao.Bind();
+//    vbo.SetData(this->vertices.size() * sizeof(Vertex), &this->vertices[0], GL_STATIC_DRAW);
+//    vao.Unbind();
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
 
 void Mesh::Load(std::shared_ptr<ShaderProgram> shader_program) {
     shader = shader_program;
+//    vao.Bind();
+//    vbo.SetAttribPointer(shader->GetAttribLocation("position"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) 0);
+//    vbo.SetAttribPointer(shader->GetAttribLocation("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Normal));
+//    vbo.SetAttribPointer(shader->GetAttribLocation("texCoords"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, TexCoords));
+//    vbo.SetAttribPointer(shader->GetAttribLocation("tangent"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Tangent));
+//    vbo.SetAttribPointer(shader->GetAttribLocation("bitangent"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, Bitangent));
+//    vao.Unbind();
     GLuint pos;
     glBindVertexArray(this->VAO);
     glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
