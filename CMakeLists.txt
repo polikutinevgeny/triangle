@@ -9,10 +9,12 @@ configure_file(fragment.frag fragment.frag COPYONLY)
 configure_file(vertex.vert vertex.vert COPYONLY)
 configure_file(white.frag white.frag COPYONLY)
 configure_file(white.vert white.vert COPYONLY)
+configure_file(text.frag text.frag COPYONLY)
+configure_file(text.vert text.vert COPYONLY)
 
 # Define sources and executable
 set(EXECUTABLE_NAME "triangle")
-add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp model.hpp triangle.hpp triangle.cpp engine.hpp engine.cpp camera.hpp camera.cpp loaded_model.hpp loaded_model.cpp mesh.hpp mesh.cpp lightsources.hpp lightsources.cpp object.hpp object.cpp)
+add_executable(${EXECUTABLE_NAME} main.cpp shader.hpp shader.cpp utility.hpp utility.cpp vbo.hpp vbo.cpp vao.hpp vao.cpp model.hpp triangle.hpp triangle.cpp engine.hpp engine.cpp camera.hpp camera.cpp loaded_model.hpp loaded_model.cpp mesh.hpp mesh.cpp lightsources.hpp lightsources.cpp object.hpp object.cpp text.hpp text.cpp)
 
 add_custom_command(TARGET triangle PRE_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory

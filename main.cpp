@@ -19,6 +19,9 @@ int main() {
     engine.white_shader = std::make_shared<ShaderProgram>(
             Shader(ReadFile("white.vert"), GL_VERTEX_SHADER),
             Shader(ReadFile("white.frag"), GL_FRAGMENT_SHADER));
+    engine.text_shader = std::make_shared<ShaderProgram>(
+            Shader(ReadFile("text.vert"), GL_VERTEX_SHADER),
+            Shader(ReadFile("text.frag"), GL_FRAGMENT_SHADER));
     LoadedModel *nanosuit = new LoadedModel(static_cast<GLchar *>("nanosuit/nanosuit.obj"));
     engine.Assign(
             new Object(nanosuit, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f, 180.f, 0.f), glm::vec3(0.3f, 0.3f, 0.3f)));
@@ -41,8 +44,9 @@ int main() {
                                  glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
     }
 
-    DirLight dirlight(glm::vec3(-0.f, -1.0f, -0.f), glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.6f, 0.6f, 0.6f),
-                      glm::vec3(0.5f, 0.5f, 0.5f));
+    engine.AddDirLight(
+            new DirLight(glm::vec3(-0.f, -1.0f, -0.f), glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.6f, 0.6f, 0.6f),
+                         glm::vec3(0.5f, 0.5f, 0.5f)));
 
     std::vector<glm::vec3> pointLightPositions = {
             glm::vec3(0.7f, 0.2f, 2.0f),
@@ -64,14 +68,15 @@ int main() {
                                         glm::vec3(0.8f, 0.f, 0.f), glm::vec3(1.0f, 0.0f, 0.0f), engine.white_shader));
 
     engine.AddFlashLight(
-            new SpotLight(glm::vec3(0), glm::vec3(0), 12.5f, 15.0f, 1.0f, 0.09f, 0.032f, glm::vec3(0), glm::vec3(1),
+            new SpotLight(glm::vec3(0), glm::vec3(0), 12.5f, 15.0f, 1.0f, 0.09f, 0.032f, glm::vec3(0),
+                          glm::vec3(0, 0, 1),
                           glm::vec3(1)));
 
 //    LoadedModel* cube = new LoadedModel(static_cast<GLchar *>("cube.ply"));
 //        engine.Assign(
 //            new Object(cube, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
-//    LoadedModel *planet = new LoadedModel(static_cast<GLchar *>("planet/planet.obj"));
-//    engine.Assign(new Object(planet, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
+    LoadedModel *planet = new LoadedModel(static_cast<GLchar *>("planet/planet.obj"));
+    engine.Assign(new Object(planet, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(2.f, 2.f, 2.f)));
 //    LoadedModel *rock = new LoadedModel(static_cast<GLchar *>("rock/rock.obj"));
 //    engine.Assign(rock);
     engine.MainLoop();

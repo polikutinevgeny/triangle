@@ -29,6 +29,7 @@ public:
 
     std::shared_ptr<ShaderProgram> main_shader;
     std::shared_ptr<ShaderProgram> white_shader;
+    std::shared_ptr<ShaderProgram> text_shader;
 
 private:
     SpotLight *flashlight;
