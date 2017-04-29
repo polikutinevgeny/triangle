@@ -12,50 +12,6 @@
 #include "text.hpp"
 
 
-//Freetype test
-
-
-std::map<GLchar, Character> Characters;
-GLuint VAO, VBO;
-
-void RenderText(std::shared_ptr<ShaderProgram> shader, std::string text, GLfloat x, GLfloat y, GLfloat scale,
-                glm::vec3 color) {
-    shader->Enable();
-    glUniform3f(shader->GetUniformLocation("textColor"), color.x, color.y, color.z);
-    glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(VAO);
-
-    std::string::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++) {
-        Character ch = Characters[*c];
-        GLfloat xpos = x + ch.Bearing.x * scale;
-        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-        GLfloat w = ch.Size.x * scale;
-        GLfloat h = ch.Size.y * scale;
-        GLfloat vertices[6][4] = {
-                {xpos,     ypos + h, 0.0, 0.0},
-                {xpos,     ypos,     0.0, 1.0},
-                {xpos + w, ypos,     1.0, 1.0},
-
-                {xpos,     ypos + h, 0.0, 0.0},
-                {xpos + w, ypos,     1.0, 1.0},
-                {xpos + w, ypos + h, 1.0, 0.0}
-        };
-        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        x += (ch.Advance >> 6) * scale;
-    }
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-
-//f_t
-
-
 void Engine::Assign(Object *object) {
     objects.push_back(object);
     object->Load(main_shader);
@@ -77,64 +33,6 @@ Engine::~Engine() {
 }
 
 void Engine::MainLoop() {
-    // Freetype test
-    FT_Library ft;
-    if (FT_Init_FreeType(&ft))
-        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-    FT_Face face;
-    if (FT_New_Face(ft, "/usr/share/fonts/TTF/comic.ttf", 0, &face))
-        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-    FT_Set_Pixel_Sizes(face, 0, 48);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    for (GLubyte c = 0; c < 128; c++) {
-        if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
-            continue;
-        }
-        GLuint texture;
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RED,
-                face->glyph->bitmap.width,
-                face->glyph->bitmap.rows,
-                0,
-                GL_RED,
-                GL_UNSIGNED_BYTE,
-                face->glyph->bitmap.buffer
-        );
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        Character character = {
-                texture,
-                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                face->glyph->advance.x
-        };
-        Characters.insert(std::pair<GLchar, Character>(c, character));
-    }
-    glBindTexture(GL_TEXTURE_2D, 0);
-    FT_Done_Face(face);
-    FT_Done_FreeType(ft);
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-    // Freetype test
-
-
-
     glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
@@ -145,6 +43,11 @@ void Engine::MainLoop() {
     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2), window);
     Camera camera(glm::vec3(-3, 0, -3), glm::vec3(0, 1, 0), 45, 0);
     sf::Clock clock;
+    Printer printer(text_shader);
+    printer.LoadFont("/usr/share/fonts/TTF/comic.ttf");
+
+    int selected_pointlight = 0;
+    flashlight->on = false;
 
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -164,6 +67,19 @@ void Engine::MainLoop() {
             if (event.type == sf::Event::MouseWheelMoved) {
                 camera.ProcessMouseScroll(event.mouseWheel.delta * 0.1f);
             }
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::LBracket) {
+                    selected_pointlight = std::max(0, std::min(selected_pointlight - 1,
+                                                               static_cast<int>(pointlights.size() - 1)));
+                }
+                if (event.key.code == sf::Keyboard::RBracket) {
+                    selected_pointlight = std::max(0, std::min(selected_pointlight + 1,
+                                                               static_cast<int>(pointlights.size() - 1)));
+                }
+                if (event.key.code == sf::Keyboard::F) {
+                    flashlight->on = !flashlight->on;
+                }
+            }
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             camera.ProcessKeyboard(FORWARD, delta_time);
@@ -182,6 +98,26 @@ void Engine::MainLoop() {
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
             camera.ProcessKeyboard(DOWN, delta_time);
+        }
+        if (selected_pointlight < pointlights.size()) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                pointlights[selected_pointlight]->position.x += 1 * delta_time;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                pointlights[selected_pointlight]->position.x -= 1 * delta_time;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+                pointlights[selected_pointlight]->position.z += 1 * delta_time;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+                pointlights[selected_pointlight]->position.z -= 1 * delta_time;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)) {
+                pointlights[selected_pointlight]->position.y += 1 * delta_time;
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::RControl)) {
+                pointlights[selected_pointlight]->position.y -= 1 * delta_time;
+            }
         }
         GLfloat xoffset = sf::Mouse::getPosition(window).x - lastX;
         GLfloat yoffset = lastY - sf::Mouse::getPosition(window).y;
@@ -218,7 +154,7 @@ void Engine::MainLoop() {
 
         glm::mat4 projection =
                 glm::perspective(glm::radians(camera.zoom), (GLfloat) window.getSize().x / (GLfloat) window.getSize().y,
-                                 0.1f, 100.f);
+                                 0.5f, 100.f);
         GLint view_loc = main_shader->GetUniformLocation("view");
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
         GLint projection_loc = main_shader->GetUniformLocation("projection");
@@ -234,14 +170,13 @@ void Engine::MainLoop() {
             pointlights[i]->Visualize(camera.GetViewMatrix(), projection);
         }
 
-        //Freetype test
         text_shader->Enable();
         projection = glm::ortho(0.0f, static_cast<GLfloat>(window.getSize().x), 0.0f,
                                 static_cast<GLfloat>(window.getSize().y));
         glUniformMatrix4fv(text_shader->GetUniformLocation("projection"), 1, GL_FALSE, glm::value_ptr(projection));
-        RenderText(text_shader, "This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        printer.RenderText("Selected pointlight #" + std::to_string(selected_pointlight),
+                           25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
         text_shader->Disable();
-        //Freetype test
 
         window.display();
     }

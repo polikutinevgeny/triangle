@@ -68,9 +68,9 @@ PointLight::PointLight(PointLight &&other) {
 
 void SpotLight::Load(std::shared_ptr<ShaderProgram> shader, std::string name) {
     glUniform3f(shader->GetUniformLocation(name + ".position"), position.x, position.y, position.z);
-    glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r, ambient.g, ambient.b);
-    glUniform3f(shader->GetUniformLocation(name + ".diffuse"), diffuse.r, diffuse.g, diffuse.b);
-    glUniform3f(shader->GetUniformLocation(name + ".specular"), specular.r, specular.g, specular.b);
+    glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r * on, ambient.g * on, ambient.b * on);
+    glUniform3f(shader->GetUniformLocation(name + ".diffuse"), diffuse.r * on, diffuse.g * on, diffuse.b * on);
+    glUniform3f(shader->GetUniformLocation(name + ".specular"), specular.r * on, specular.g * on, specular.b * on);
     glUniform1f(shader->GetUniformLocation(name + ".constant"), constant);
     glUniform1f(shader->GetUniformLocation(name + ".linear"), linear);
     glUniform1f(shader->GetUniformLocation(name + ".quadratic"), quadratic);
@@ -85,7 +85,8 @@ SpotLight::SpotLight(const glm::vec3 &position, const glm::vec3 &direction, GLfl
                                                                             cutOff(cutOff), outerCutOff(outerCutOff),
                                                                             constant(constant), linear(linear),
                                                                             quadratic(quadratic), ambient(ambient),
-                                                                            diffuse(diffuse), specular(specular) {}
+                                                                            diffuse(diffuse), specular(specular),
+                                                                            on(true) {}
 
 void SpotLight::Visualize(glm::mat4 view, glm::mat4 projection) {
 

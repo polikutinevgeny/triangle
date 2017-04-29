@@ -7,9 +7,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
+#include <memory>
 #include FT_FREETYPE_H
-#include "vao.hpp"
-#include "vbo.hpp"
+#include "shader.hpp"
 
 
 struct Character {
@@ -20,12 +20,19 @@ struct Character {
 };
 
 
-class Font {
+class Printer {
 public:
+    Printer(std::shared_ptr<ShaderProgram> shader);
+
+    ~Printer();
+
+    void LoadFont(std::string path);
+
+    void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color);
     std::map<GLchar, Character> characters;
+    std::shared_ptr<ShaderProgram> shader;
 private:
-    VAO vao;
-    VBO vbo;
+    GLuint VAO, VBO;
 };
 
 

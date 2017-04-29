@@ -67,6 +67,7 @@ struct SpotLight : Light {
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
+    bool on;
 
     void Load(std::shared_ptr<ShaderProgram> shader, std::string name) override;
 
