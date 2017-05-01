@@ -93,13 +93,19 @@ int main() {
     engine.AddFlashLight(
             new SpotLight(glm::vec3(0), glm::vec3(0), 12.5f, 15.0f, 1.0f, 0.09f,
                           0.032f, glm::vec3(0),
-                          glm::vec3(0, 0, 1), glm::vec3(1),
+                          glm::vec3(0, 0, 1), glm::vec3(0, 0, 1),
                           engine.white_shader));
     engine.AddSpotLight(new SpotLight(glm::vec3(5, 5, 5),
                                       glm::normalize(glm::vec3(-1, -1, -1)),
                                       12.5f, 15.0f, 1.0f, 0.09f, 0.032f,
                                       glm::vec3(0),
-                                      glm::vec3(1, 0, 1), glm::vec3(1),
+                                      glm::vec3(1, 0, 0), glm::vec3(1, 0, 0),
+                                      engine.white_shader));
+    engine.AddSpotLight(new SpotLight(glm::vec3(4, 6, 4),
+                                      glm::normalize(glm::vec3(-4, -6, -4)),
+                                      12.5f, 15.0f, 1.0f, 0.09f, 0.032f,
+                                      glm::vec3(0),
+                                      glm::vec3(0, 1, 0), glm::vec3(0, 1, 0),
                                       engine.white_shader));
 
 //    LoadedModel* cube = new LoadedModel(static_cast<GLchar *>("cube.ply"));

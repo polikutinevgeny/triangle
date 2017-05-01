@@ -47,7 +47,9 @@ void Engine::MainLoop() {
     Camera camera(glm::vec3(-3, 0, -3), glm::vec3(0, 1, 0), 45, 0);
     sf::Clock clock;
     Printer printer(text_shader);
-    printer.LoadFont("/usr/share/fonts/TTF/comic.ttf");
+//    printer.LoadFont("/usr/share/fonts/TTF/Monoton-Regular.ttf");
+    printer.LoadFont("/usr/share/fonts/TTF/EuphoriaScript-Regular.ttf");
+
 
     bool editing_pl = true;
     bool editing_sl = false;
@@ -186,14 +188,14 @@ void Engine::MainLoop() {
                         glm::rotate(spotlights[selected_spotlight]->direction,
                                     -delta_time, glm::vec3(0, 1, 0));
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
                 spotlights[selected_spotlight]->direction =
                         glm::rotate(spotlights[selected_spotlight]->direction,
                                     delta_time, glm::cross(
                                         spotlights[selected_spotlight]->direction,
                                         glm::vec3(0, 1, 0)));
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::O)) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) {
                 spotlights[selected_spotlight]->direction =
                         glm::rotate(spotlights[selected_spotlight]->direction,
                                     -delta_time, glm::cross(
