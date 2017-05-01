@@ -32,12 +32,15 @@ void Triangle::Load(std::shared_ptr<ShaderProgram> shader_program) {
     vao.Bind();
     GLuint position = shader->GetAttribLocation("position");
     GLuint color = shader->GetAttribLocation("color");
-    vbo.SetAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-    vbo.SetAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    vbo.SetAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+                         (GLvoid *) 0);
+    vbo.SetAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+                         (GLvoid *) (3 * sizeof(GLfloat)));
     vao.Unbind();
 }
 
-Line::Line(GLfloat *vertices, GLfloat x, GLfloat y, GLfloat z) : x(x), y(y), z(z) {
+Line::Line(GLfloat *vertices, GLfloat x, GLfloat y, GLfloat z) : x(x), y(y),
+                                                                 z(z) {
     std::copy(vertices, vertices + 12, this->vertices);
     vao.Bind();
     vbo.SetData(sizeof(this->vertices), this->vertices, GL_STATIC_DRAW);
@@ -49,8 +52,10 @@ void Line::Load(std::shared_ptr<ShaderProgram> shader_program) {
     vao.Bind();
     GLuint position = shader->GetAttribLocation("position");
     GLuint color = shader->GetAttribLocation("color");
-    vbo.SetAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
-    vbo.SetAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    vbo.SetAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+                         (GLvoid *) 0);
+    vbo.SetAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+                         (GLvoid *) (3 * sizeof(GLfloat)));
     vao.Unbind();
 }
 
@@ -126,7 +131,8 @@ void LightCube::Load(std::shared_ptr<ShaderProgram> shader_program) {
     shader = shader_program;
     vao.Bind();
     GLuint position = shader->GetAttribLocation("position");
-    vbo.SetAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) 0);
+    vbo.SetAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat),
+                         (GLvoid *) 0);
     vao.Unbind();
 }
 

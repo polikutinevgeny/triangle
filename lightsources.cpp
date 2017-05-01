@@ -6,22 +6,29 @@
 #include "vbo.hpp"
 
 void DirLight::Load(std::shared_ptr<ShaderProgram> shader, std::string name) {
-    glUniform3f(shader->GetUniformLocation(name + ".direction"), direction.x, direction.y, direction.z);
-    glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r, ambient.g, ambient.b);
-    glUniform3f(shader->GetUniformLocation(name + ".diffuse"), diffuse.r, diffuse.g, diffuse.b);
-    glUniform3f(shader->GetUniformLocation(name + ".specular"), specular.r, specular.g, specular.b);
+    glUniform3f(shader->GetUniformLocation(name + ".direction"), direction.x,
+                direction.y, direction.z);
+    glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r,
+                ambient.g, ambient.b);
+    glUniform3f(shader->GetUniformLocation(name + ".diffuse"), diffuse.r,
+                diffuse.g, diffuse.b);
+    glUniform3f(shader->GetUniformLocation(name + ".specular"), specular.r,
+                specular.g, specular.b);
 }
 
-DirLight::DirLight(const glm::vec3 &direction, const glm::vec3 ambient, const glm::vec3 diffuse,
+DirLight::DirLight(const glm::vec3 &direction, const glm::vec3 ambient,
+                   const glm::vec3 diffuse,
                    const glm::vec3 specular)
-        : direction(direction), ambient(ambient), diffuse(diffuse), specular(specular) {}
+        : direction(direction), ambient(ambient), diffuse(diffuse),
+          specular(specular) {}
 
 void DirLight::Visualize(glm::mat4 view, glm::mat4 projection) {
 
 }
 
 void PointLight::Load(std::shared_ptr<ShaderProgram> shader, std::string name) {
-    glUniform3f(shader->GetUniformLocation(name + ".position"), position.x, position.y, position.z);
+    glUniform3f(shader->GetUniformLocation(name + ".position"), position.x,
+                position.y, position.z);
     glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r * on,
                 ambient.g * on, ambient.b * on);
     glUniform3f(shader->GetUniformLocation(name + ".diffuse"), diffuse.r * on,
@@ -33,10 +40,13 @@ void PointLight::Load(std::shared_ptr<ShaderProgram> shader, std::string name) {
     glUniform1f(shader->GetUniformLocation(name + ".quadratic"), quadratic);
 }
 
-PointLight::PointLight(const glm::vec3 &position, GLfloat constant, GLfloat linear, GLfloat quadratic,
-                       const glm::vec3 &ambient, const glm::vec3 &diffuse, const glm::vec3 &specular,
+PointLight::PointLight(const glm::vec3 &position, GLfloat constant,
+                       GLfloat linear, GLfloat quadratic,
+                       const glm::vec3 &ambient, const glm::vec3 &diffuse,
+                       const glm::vec3 &specular,
                        std::shared_ptr<ShaderProgram> vis_shader) :
-        position(position), constant(constant), linear(linear), quadratic(quadratic), ambient(ambient),
+        position(position), constant(constant), linear(linear),
+        quadratic(quadratic), ambient(ambient),
         diffuse(diffuse), specular(specular), vis_shader(vis_shader), on(true) {
     cube.Load(vis_shader);
 }
@@ -52,7 +62,8 @@ void PointLight::Visualize(glm::mat4 view, glm::mat4 projection) {
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
     GLint projection_loc = vis_shader->GetUniformLocation("projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform3f(vis_shader->GetUniformLocation("lightColor"), diffuse.r, diffuse.g, diffuse.b);
+    glUniform3f(vis_shader->GetUniformLocation("lightColor"), diffuse.r,
+                diffuse.g, diffuse.b);
     cube.Draw();
     vis_shader->Disable();
 }
@@ -70,30 +81,35 @@ PointLight::PointLight(PointLight &&other) {
 }
 
 void SpotLight::Load(std::shared_ptr<ShaderProgram> shader, std::string name) {
-    glUniform3f(shader->GetUniformLocation(name + ".position"), position.x, position.y, position.z);
-    glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r * on, ambient.g * on, ambient.b * on);
-    glUniform3f(shader->GetUniformLocation(name + ".diffuse"), diffuse.r * on, diffuse.g * on, diffuse.b * on);
-    glUniform3f(shader->GetUniformLocation(name + ".specular"), specular.r * on, specular.g * on, specular.b * on);
+    glUniform3f(shader->GetUniformLocation(name + ".position"), position.x,
+                position.y, position.z);
+    glUniform3f(shader->GetUniformLocation(name + ".ambient"), ambient.r * on,
+                ambient.g * on, ambient.b * on);
+    glUniform3f(shader->GetUniformLocation(name + ".diffuse"), diffuse.r * on,
+                diffuse.g * on, diffuse.b * on);
+    glUniform3f(shader->GetUniformLocation(name + ".specular"), specular.r * on,
+                specular.g * on, specular.b * on);
     glUniform1f(shader->GetUniformLocation(name + ".constant"), constant);
     glUniform1f(shader->GetUniformLocation(name + ".linear"), linear);
     glUniform1f(shader->GetUniformLocation(name + ".quadratic"), quadratic);
-    glUniform3f(shader->GetUniformLocation(name + ".direction"), direction.x, direction.y, direction.z);
-    glUniform1f(shader->GetUniformLocation(name + ".cutOff"), glm::cos(glm::radians(cutOff)));
-    glUniform1f(shader->GetUniformLocation(name + ".outerCutOff"), glm::cos(glm::radians(outerCutOff)));
+    glUniform3f(shader->GetUniformLocation(name + ".direction"), direction.x,
+                direction.y, direction.z);
+    glUniform1f(shader->GetUniformLocation(name + ".cutOff"),
+                glm::cos(glm::radians(cutOff)));
+    glUniform1f(shader->GetUniformLocation(name + ".outerCutOff"),
+                glm::cos(glm::radians(outerCutOff)));
 }
 
-SpotLight::SpotLight(const glm::vec3 &position, const glm::vec3 &direction, GLfloat cutOff, GLfloat outerCutOff,
-                     GLfloat constant, GLfloat linear, GLfloat quadratic, const glm::vec3 &ambient,
+SpotLight::SpotLight(const glm::vec3 &position, const glm::vec3 &direction,
+                     GLfloat cutOff, GLfloat outerCutOff,
+                     GLfloat constant, GLfloat linear, GLfloat quadratic,
+                     const glm::vec3 &ambient,
                      const glm::vec3 &diffuse, const glm::vec3 &specular,
                      std::shared_ptr<ShaderProgram> vis_shader) : position(
-        position), direction(direction),
-                                                                  cutOff(cutOff), outerCutOff(outerCutOff),
-                                                                  constant(constant), linear(linear),
-                                                                  quadratic(quadratic), ambient(ambient),
-                                                                  diffuse(diffuse), specular(specular),
-                                                                  on(true),
-                                                                  vis_shader(
-                                                                          vis_shader) {
+        position), direction(direction), cutOff(cutOff), outerCutOff(
+        outerCutOff), constant(constant), linear(linear), quadratic(
+        quadratic), ambient(ambient), diffuse(diffuse), specular(
+        specular), on(true), vis_shader(vis_shader) {
     color_cube.Load(vis_shader);
     black_cube.Load(vis_shader);
 }

@@ -11,14 +11,16 @@
 struct Light {
     virtual ~Light() {};
 
-    virtual void Load(std::shared_ptr<ShaderProgram> shader, std::string name) = 0;
+    virtual void
+    Load(std::shared_ptr<ShaderProgram> shader, std::string name) = 0;
 
     virtual void Visualize(glm::mat4 view, glm::mat4 projection) = 0;
 };
 
 
 struct DirLight : Light {
-    DirLight(const glm::vec3 &direction, const glm::vec3 ambient, const glm::vec3 diffuse, const glm::vec3 specular);
+    DirLight(const glm::vec3 &direction, const glm::vec3 ambient,
+             const glm::vec3 diffuse, const glm::vec3 specular);
 
     glm::vec3 direction;
     glm::vec3 ambient;
@@ -31,8 +33,10 @@ struct DirLight : Light {
 };
 
 struct PointLight : Light {
-    PointLight(const glm::vec3 &position, GLfloat constant, GLfloat linear, GLfloat quadratic, const glm::vec3 &ambient,
-               const glm::vec3 &diffuse, const glm::vec3 &specular, std::shared_ptr<ShaderProgram> vis_shader);
+    PointLight(const glm::vec3 &position, GLfloat constant, GLfloat linear,
+               GLfloat quadratic, const glm::vec3 &ambient,
+               const glm::vec3 &diffuse, const glm::vec3 &specular,
+               std::shared_ptr<ShaderProgram> vis_shader);
 
     PointLight(PointLight &&other);
 
@@ -54,8 +58,10 @@ struct PointLight : Light {
 };
 
 struct SpotLight : Light {
-    SpotLight(const glm::vec3 &position, const glm::vec3 &direction, GLfloat cutOff, GLfloat outerCutOff,
-              GLfloat constant, GLfloat linear, GLfloat quadratic, const glm::vec3 &ambient, const glm::vec3 &diffuse,
+    SpotLight(const glm::vec3 &position, const glm::vec3 &direction,
+              GLfloat cutOff, GLfloat outerCutOff,
+              GLfloat constant, GLfloat linear, GLfloat quadratic,
+              const glm::vec3 &ambient, const glm::vec3 &diffuse,
               const glm::vec3 &specular,
               std::shared_ptr<ShaderProgram> vis_shader);
 
