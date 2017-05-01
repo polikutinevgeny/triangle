@@ -44,6 +44,7 @@ struct PointLight : Light {
     glm::vec3 diffuse;
     glm::vec3 specular;
     LightCube cube;
+    bool on;
 
     std::shared_ptr<ShaderProgram> vis_shader;
 
@@ -55,7 +56,8 @@ struct PointLight : Light {
 struct SpotLight : Light {
     SpotLight(const glm::vec3 &position, const glm::vec3 &direction, GLfloat cutOff, GLfloat outerCutOff,
               GLfloat constant, GLfloat linear, GLfloat quadratic, const glm::vec3 &ambient, const glm::vec3 &diffuse,
-              const glm::vec3 &specular);
+              const glm::vec3 &specular,
+              std::shared_ptr<ShaderProgram> vis_shader);
 
     glm::vec3 position;
     glm::vec3 direction;
@@ -68,6 +70,10 @@ struct SpotLight : Light {
     glm::vec3 diffuse;
     glm::vec3 specular;
     bool on;
+    LightCube color_cube;
+    LightCube black_cube;
+
+    std::shared_ptr<ShaderProgram> vis_shader;
 
     void Load(std::shared_ptr<ShaderProgram> shader, std::string name) override;
 
