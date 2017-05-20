@@ -12,12 +12,14 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices,
 void Mesh::Draw() {
     glUniform1f(shader->GetUniformLocation("material.shininess"), shininess);
     glUniform1ui(shader->GetUniformLocation("UseNormalMap"), 0);
+    glUniform1ui(shader->GetUniformLocation("UseTexture"), 0);
     for (GLuint i = 0; i < this->textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i);
         std::string name = this->textures[i].type;
         if (name == "texture_diffuse") {
             glUniform1i(shader->GetUniformLocation("material.diffuse"), i);
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
+            glUniform1ui(shader->GetUniformLocation("UseTexture"), 1);
         } else if (name == "texture_specular") {
             glUniform1i(shader->GetUniformLocation("material.specular"), i);
             glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
@@ -40,6 +42,8 @@ void Mesh::Draw() {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+    glUniform1ui(shader->GetUniformLocation("UseNormalMap"), 0);
+    glUniform1ui(shader->GetUniformLocation("UseTexture"), 0);
 }
 
 void Mesh::setupMesh() {

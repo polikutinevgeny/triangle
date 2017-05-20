@@ -23,10 +23,12 @@ void main() {
     Normal = normalize(normalMatrix * normal);
 
     vec3 T = normalize(normalMatrix * tangent);
-    vec3 B = normalize(normalMatrix * bitangent);
     vec3 N = normalize(normalMatrix * normal);
+    T = normalize(T - dot(T, N) * N);
+//    vec3 B = normalize(normalMatrix * bitangent);
+    vec3 B = cross(N, T);
     if (dot(cross(T, B), N) < 0.0) {
         T = T * -1.0;
     }
-    TBN = transpose(mat3(T, B, N));
+    TBN = mat3(T, B, N);
 }

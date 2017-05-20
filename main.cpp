@@ -56,11 +56,11 @@ int main() {
                            glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
     }
 
-    engine.AddDirLight(
-            new DirLight(glm::vec3(-0.f, -1.0f, -0.f),
-                         glm::vec3(0.05f, 0.05f, 0.05f),
-                         glm::vec3(0.6f, 0.6f, 0.6f),
-                         glm::vec3(0.5f, 0.5f, 0.5f)));
+//    engine.AddDirLight(
+//            new DirLight(glm::vec3(-0.f, -1.0f, -0.f),
+//                         glm::vec3(0.05f, 0.05f, 0.05f),
+//                         glm::vec3(0.6f, 0.6f, 0.6f),
+//                         glm::vec3(0.5f, 0.5f, 0.5f)));
 
     std::vector<glm::vec3> pointLightPositions = {
             glm::vec3(0.7f, 0.2f, 2.0f),
@@ -93,7 +93,7 @@ int main() {
     engine.AddFlashLight(
             new SpotLight(glm::vec3(0), glm::vec3(0), 12.5f, 15.0f, 1.0f, 0.09f,
                           0.032f, glm::vec3(0),
-                          glm::vec3(0, 0, 1), glm::vec3(0, 0, 1),
+                          glm::vec3(1, 1, 1), glm::vec3(1, 1, 1),
                           engine.white_shader));
     engine.AddSpotLight(new SpotLight(glm::vec3(5, 5, 5),
                                       glm::normalize(glm::vec3(-1, -1, -1)),
@@ -115,6 +115,8 @@ int main() {
             static_cast<GLchar *>("planet/planet.obj"));
     engine.Assign(new Object(planet, glm::vec3(0.0f, 0.0f, 0.0f),
                              glm::vec3(0.f, 0.f, 0.f),
+                             glm::vec3(2.f, 2.f, 2.f)));
+    engine.Assign(new Object(new Dirt, glm::vec3(5), glm::vec3(0.f, 0.f, 0.f),
                              glm::vec3(2.f, 2.f, 2.f)));
 //    LoadedModel *rock = new LoadedModel(static_cast<GLchar *>("rock/rock.obj"));
 //    engine.Assign(rock);

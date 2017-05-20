@@ -48,7 +48,8 @@ void Engine::MainLoop() {
     sf::Clock clock;
     Printer printer(text_shader);
 //    printer.LoadFont("/usr/share/fonts/TTF/Monoton-Regular.ttf");
-    printer.LoadFont("/usr/share/fonts/TTF/EuphoriaScript-Regular.ttf");
+//    printer.LoadFont("/usr/share/fonts/TTF/EuphoriaScript-Regular.ttf");
+    printer.LoadFont("/usr/share/fonts/TTF/arial.ttf");
 
 
     bool editing_pl = true;
@@ -58,8 +59,6 @@ void Engine::MainLoop() {
     if (flashlight) {
         flashlight->on = false;
     }
-
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (window.isOpen()) {
         GLfloat time_value = clock.getElapsedTime().asSeconds();
@@ -249,7 +248,7 @@ void Engine::MainLoop() {
                 glm::perspective(glm::radians(camera.zoom),
                                  (GLfloat) window.getSize().x /
                                  (GLfloat) window.getSize().y,
-                                 0.5f, 100.f);
+                                 0.01f, 100.f);
         GLint view_loc = main_shader->GetUniformLocation("view");
         glUniformMatrix4fv(view_loc, 1, GL_FALSE,
                            glm::value_ptr(camera.GetViewMatrix()));

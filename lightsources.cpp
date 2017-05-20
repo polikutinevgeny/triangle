@@ -62,8 +62,10 @@ void PointLight::Visualize(glm::mat4 view, glm::mat4 projection) {
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
     GLint projection_loc = vis_shader->GetUniformLocation("projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform3f(vis_shader->GetUniformLocation("lightColor"), diffuse.r,
-                diffuse.g, diffuse.b);
+    glUniform3f(vis_shader->GetUniformLocation("lightColor"),
+                diffuse.r / 2 * on + diffuse.r / 2,
+                diffuse.g / 2 * on + diffuse.g / 2,
+                diffuse.b / 2 * on + diffuse.b / 2);
     cube.Draw();
     vis_shader->Disable();
 }
@@ -125,8 +127,10 @@ void SpotLight::Visualize(glm::mat4 view, glm::mat4 projection) {
     glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
     GLint projection_loc = vis_shader->GetUniformLocation("projection");
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform3f(vis_shader->GetUniformLocation("lightColor"), diffuse.r,
-                diffuse.g, diffuse.b);
+    glUniform3f(vis_shader->GetUniformLocation("lightColor"),
+                diffuse.r / 2 * on + diffuse.r / 2,
+                diffuse.g / 2 * on + diffuse.g / 2,
+                diffuse.b / 2 * on + diffuse.b / 2);
     color_cube.Draw();
     model = glm::mat4();
     model = glm::translate(model, position - direction * 0.1f);

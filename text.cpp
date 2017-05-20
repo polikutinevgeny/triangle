@@ -9,7 +9,8 @@ Printer::Printer(std::shared_ptr<ShaderProgram> shader) : shader(shader) {
 void Printer::LoadFont(std::string path) {
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
-        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library"
+                  << std::endl;
     FT_Face face;
     if (FT_New_Face(ft, path.c_str(), 0, &face))
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
@@ -23,17 +24,9 @@ void Printer::LoadFont(std::string path) {
         GLuint texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RED,
-                face->glyph->bitmap.width,
-                face->glyph->bitmap.rows,
-                0,
-                GL_RED,
-                GL_UNSIGNED_BYTE,
-                face->glyph->bitmap.buffer
-        );
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width,
+                     face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE,
+                     face->glyph->bitmap.buffer);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -52,16 +45,19 @@ void Printer::LoadFont(std::string path) {
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL,
+                 GL_DYNAMIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
 
-void Printer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
+void Printer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
+                         glm::vec3 color) {
     shader->Enable();
-    glUniform3f(shader->GetUniformLocation("textColor"), color.x, color.y, color.z);
+    glUniform3f(shader->GetUniformLocation("textColor"), color.x, color.y,
+                color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
     std::string::const_iterator c;

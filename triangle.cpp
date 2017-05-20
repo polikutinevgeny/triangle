@@ -139,3 +139,54 @@ void LightCube::Load(std::shared_ptr<ShaderProgram> shader_program) {
 LightCube::~LightCube() {
     delete[] vertices;
 }
+
+Dirt::Dirt() {
+    vertices = new GLfloat[84]{
+            0, 0, 0, 0, 0, -1, 0, 0, 0, 1, 0, 1, 0, 0,
+            0, 1, 0, 0, 0, -1, 0, 1, 0, 1, 0, 1, 0, 0,
+            1, 0, 0, 0, 0, -1, 1, 0, 0, 1, 0, 1, 0, 0,
+
+            1, 0, 0, 0, 0, -1, 1, 0, 0, 1, 0, 1, 0, 0,
+            0, 1, 0, 0, 0, -1, 0, 1, 0, 1, 0, 1, 0, 0,
+            1, 1, 0, 0, 0, -1, 1, 1, 0, 1, 0, 1, 0, 0,
+    };
+    vao.Bind();
+    vbo.SetData(84 * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+    vao.Unbind();
+}
+
+Dirt::~Dirt() {
+    delete[] vertices;
+}
+
+void Dirt::Load(std::shared_ptr<ShaderProgram> shader_program) {
+    shader = shader_program;
+    vao.Bind();
+    vao.Bind();
+    vbo.SetAttribPointer(shader->GetAttribLocation("position"), 3, GL_FLOAT,
+                         GL_FALSE, 14 * sizeof(GLfloat), (GLvoid *) 0);
+    vbo.SetAttribPointer(shader->GetAttribLocation("normal"), 3, GL_FLOAT,
+                         GL_FALSE, 14 * sizeof(GLfloat),
+                         (GLvoid *) (3 * sizeof(GLfloat)));
+    vbo.SetAttribPointer(shader->GetAttribLocation("texCoords"), 2, GL_FLOAT,
+                         GL_FALSE, 14 * sizeof(GLfloat),
+                         (GLvoid *) (6 * sizeof(GLfloat)));
+    vbo.SetAttribPointer(shader->GetAttribLocation("tangent"), 3, GL_FLOAT,
+                         GL_FALSE, 14 * sizeof(GLfloat),
+                         (GLvoid *) (8 * sizeof(GLfloat)));
+    vbo.SetAttribPointer(shader->GetAttribLocation("bitangent"), 3, GL_FLOAT,
+                         GL_FALSE, 14 * sizeof(GLfloat),
+                         (GLvoid *) (11 * sizeof(GLfloat)));
+    vao.Unbind();
+}
+
+void Dirt::Draw() {
+    vao.Bind();
+    glUniform1f(shader->GetUniformLocation("material.shininess"), 255);
+    glUniform1i(shader->GetUniformLocation("PerlinNormals"), 1);
+    glUniform3f(shader->GetUniformLocation("material.color"), 139.0f / 255,
+                69.0f / 255, 19.0f / 255);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glUniform1i(shader->GetUniformLocation("PerlinNormals"), 0);
+    vao.Unbind();
+}

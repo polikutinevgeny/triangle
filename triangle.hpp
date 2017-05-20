@@ -55,4 +55,21 @@ public:
     VAO vao;
 };
 
+class Dirt : public Model {
+public:
+    Dirt();
+
+    ~Dirt();
+
+    void Load(std::shared_ptr<ShaderProgram> shader_program) override;
+
+    void Draw() override;
+
+    std::shared_ptr<ShaderProgram> sp;
+
+    GLfloat *vertices;
+    VBO vbo;
+    VAO vao;
+};
+
 #endif //TRIANGLE_TRIANGLE_HPP
