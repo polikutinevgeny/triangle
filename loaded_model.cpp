@@ -5,8 +5,14 @@
 GLint TextureFromFile(const char *path, std::string directory);
 
 void LoadedModel::Draw() {
+    if (!use_textures) {
+        glUniform1ui(shader->GetUniformLocation("UseCheckers"), 1);
+    }
     for (GLuint i = 0; i < this->meshes.size(); i++)
         this->meshes[i].Draw();
+    if (!use_textures) {
+        glUniform1ui(shader->GetUniformLocation("UseCheckers"), 0);
+    }
 }
 
 void LoadedModel::processNode(aiNode *node, const aiScene *scene) {

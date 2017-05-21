@@ -59,6 +59,7 @@ void Engine::MainLoop() {
     if (flashlight) {
         flashlight->on = false;
     }
+    GLfloat checkers_size = 0.1f;
 
     while (window.isOpen()) {
         GLfloat time_value = clock.getElapsedTime().asSeconds();
@@ -119,6 +120,13 @@ void Engine::MainLoop() {
                     }
                 }
             }
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::T)) {
+            checkers_size += delta_time * 0.01;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {
+            checkers_size = std::fmaxf(0.001,
+                                       checkers_size - delta_time * 0.01);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             camera.ProcessKeyboard(FORWARD, delta_time);
@@ -220,6 +228,8 @@ void Engine::MainLoop() {
 
         main_shader->Enable();
 
+        glUniform1f(main_shader->GetUniformLocation("CheckersSize"),
+                    checkers_size);
         glUniform1i(main_shader->GetUniformLocation("DirLightNum"),
                     static_cast<GLint>(dirlights.size()));
         glUniform1i(main_shader->GetUniformLocation("PointLightNum"),

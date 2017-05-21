@@ -182,10 +182,14 @@ void Dirt::Load(std::shared_ptr<ShaderProgram> shader_program) {
 
 void Dirt::Draw() {
     vao.Bind();
-    glUniform1f(shader->GetUniformLocation("material.shininess"), 255);
+    glUniform1f(shader->GetUniformLocation("material.shininess"), 1000);
     glUniform1i(shader->GetUniformLocation("PerlinNormals"), 1);
-    glUniform3f(shader->GetUniformLocation("material.color"), 139.0f / 255,
-                69.0f / 255, 19.0f / 255);
+    glUniform3f(shader->GetUniformLocation("material.diffuse_color"),
+                120.0f / 255,
+                72.0f / 255, 0.0f / 255);
+    glUniform3f(shader->GetUniformLocation("material.specular_color"),
+                120.0f / 255 / 10,
+                72.0f / 255 / 10, 0.0f / 255 / 10);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glUniform1i(shader->GetUniformLocation("PerlinNormals"), 0);
     vao.Unbind();

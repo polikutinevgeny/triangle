@@ -6,7 +6,8 @@ struct Material {
     sampler2D normal;
     sampler2D height;
     float shininess;
-    vec3 color;
+    vec3 diffuse_color;
+    vec3 specular_color;
 };
 
 struct DirLight {
@@ -54,6 +55,9 @@ uniform bool UseTexture;
 uniform bool UseNormalMap;
 uniform bool FillWhite;
 uniform bool PerlinNormals;
+uniform bool UseCheckers;
+
+uniform float CheckersSize;
 
 uniform vec3 viewPos;
 uniform DirLight dirLights[DIR_LIGHTS];
@@ -68,20 +72,20 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 a, vec3 d, vec
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 a, vec3 d, vec3 s);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 a, vec3 d, vec3 s);
 
-//Perlin noise test
+
 vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
 vec2 fade(vec2 t) {return t*t*t*(t*(t*6.0-15.0)+10.0);}
 
 float cnoise(vec2 P){
   vec4 Pi = floor(P.xyxy) + vec4(0.0, 0.0, 1.0, 1.0);
   vec4 Pf = fract(P.xyxy) - vec4(0.0, 0.0, 1.0, 1.0);
-  Pi = mod(Pi, 289.0); // To avoid truncation effects in permutation
+  Pi = mod(Pi, 289.0);
   vec4 ix = Pi.xzxz;
   vec4 iy = Pi.yyww;
   vec4 fx = Pf.xzxz;
   vec4 fy = Pf.yyww;
   vec4 i = permute(permute(ix) + iy);
-  vec4 gx = 2.0 * fract(i * 0.0243902439) - 1.0; // 1/41 = 0.024...
+  vec4 gx = 2.0 * fract(i * 0.0243902439) - 1.0;
   vec4 gy = abs(gx) - 0.5;
   vec4 tx = floor(gx + 0.5);
   gx = gx - tx;
@@ -104,7 +108,6 @@ float cnoise(vec2 P){
   float n_xy = mix(n_x.x, n_x.y, fade_xy.y);
   return 2.3 * n_xy;
 }
-//PNT
 
 void main() {
     if (FillWhite) {
@@ -118,8 +121,8 @@ void main() {
         norm = normalize(TBN * norm);
     }
     if (PerlinNormals) {
-        const float mult = 20;
-        const float scale = 2;
+        const float mult = 25;
+        const float scale = 0.5;
         const float offset = 1;
         vec3 n = vec3(cnoise((TexCoords - vec2(offset, 0)) * mult) -
                         cnoise((TexCoords + vec2(offset, 0)) * mult),
@@ -132,10 +135,24 @@ void main() {
     vec3 diffuse = vec3(texture(material.diffuse, TexCoords));
     vec3 specular = vec3(texture(material.specular, TexCoords));
     if (!UseTexture) {
-        ambient = vec3(139.0 / 255, 69.0 / 255, 19.0 / 255);
-        diffuse = vec3(139.0 / 255, 69.0 / 255, 19.0 / 255);
-        specular = vec3(139.0 / 255, 69.0 / 255, 19.0 / 255);
+        ambient = material.diffuse_color;
+        diffuse = material.diffuse_color;
+        specular = material.specular_color;
     }
+    //shashechka
+    if (UseCheckers) {
+        if ((int(TexCoords.x / CheckersSize) + int(TexCoords.y / CheckersSize)) % 2 == 1) {
+            ambient = vec3(1.0);
+            diffuse = vec3(1.0);
+            specular = vec3(1.0);
+        }
+        else {
+            ambient = vec3(0.1);
+            diffuse = vec3(0.1);
+            specular = vec3(0.1);
+        }
+    }
+    //shashechka
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 result = vec3(0);
     for(int i = 0; i < DirLightNum; i++) {

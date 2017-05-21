@@ -7,8 +7,9 @@
 
 class LoadedModel : public Model {
 public:
-    LoadedModel(GLchar *path) {
+    LoadedModel(GLchar *path, bool use_textures = true) {
         this->loadModel(path);
+        this->use_textures = use_textures;
     }
 
     ~LoadedModel();
@@ -18,6 +19,7 @@ public:
     void Draw() override;
 
 private:
+    bool use_textures;
     std::vector<Mesh> meshes;
     std::string directory;
     std::vector<Texture> textures_loaded;
