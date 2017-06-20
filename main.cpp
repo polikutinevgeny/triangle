@@ -107,19 +107,13 @@ int main() {
                                       glm::vec3(0),
                                       glm::vec3(0, 1, 0), glm::vec3(0, 1, 0),
                                       engine.white_shader));
-
-//    LoadedModel* cube = new LoadedModel(static_cast<GLchar *>("cube.ply"));
-//        engine.Assign(
-//            new Object(cube, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
     LoadedModel *planet = new LoadedModel(
             static_cast<GLchar *>("planet/planet.obj"), false);
     engine.Assign(new Object(planet, glm::vec3(0.0f, 0.0f, 0.0f),
                              glm::vec3(0.f, 0.f, 0.f),
                              glm::vec3(2.f, 2.f, 2.f)));
     engine.Assign(new Object(new Dirt, glm::vec3(5), glm::vec3(0.f, 0.f, 0.f),
-                             glm::vec3(2.f, 2.f, 2.f)));
-//    LoadedModel *rock = new LoadedModel(static_cast<GLchar *>("rock/rock.obj"));
-//    engine.Assign(rock);
+                             glm::vec3(8.f, 8.f, 8.f)));
     engine.MainLoop();
     return 0;
 }

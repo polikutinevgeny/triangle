@@ -121,8 +121,8 @@ void main() {
         norm = normalize(TBN * norm);
     }
     if (PerlinNormals) {
-        const float mult = 25;
-        const float scale = 0.5;
+        const float mult = 32;
+        const float scale = 0.25;
         const float offset = 1;
         vec3 n = vec3(cnoise((TexCoords - vec2(offset, 0)) * mult) -
                         cnoise((TexCoords + vec2(offset, 0)) * mult),

@@ -218,7 +218,7 @@ void Engine::MainLoop() {
                 sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2),
                 window);
         camera.ProcessMouseMovement(xoffset, yoffset);
-        glClearColor(0.1, 0.1, 0.1, 1);
+        glClearColor(0.2f, 0.2f, 0.2f, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (flashlight) {
